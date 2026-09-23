@@ -203,6 +203,17 @@
   }
   .colophon .rule{margin:22px auto;}
 
+  /* ---------- next chapter ---------- */
+  .next-chapter{margin-top:30px;text-align:center;}
+  .next-eyebrow{font-size:11.5px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;}
+  .next-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    text-decoration:none;color:var(--ink);padding:6px 12px;
+  }
+  .next-cta .n-arrow{font-size:22px;color:var(--rose);display:inline-block;animation:nudge 1.6s ease-in-out infinite;}
+  .next-cta .n-name{font-size:14px;letter-spacing:3px;}
+  .next-cta:hover .n-name{color:var(--rose);}
+
   /* ---------- hero scene ---------- */
   .hero{
     margin:26px auto 10px;max-width:780px;text-align:center;
@@ -360,6 +371,14 @@
     <div data-page-node-id="vsyAKIyCtBJoi03omiiwF0">INSPIRED BY ANTOINE DE SAINT-EXUPÉRY · 《小王子》1943</div>
     <div data-page-node-id="sgEkeDRp8T0Oz8mejSNq0m">点击任意星球，听它讲自己的故事</div>
   </footer>
+
+  <div class="next-chapter">
+    <div class="next-eyebrow">Next Chapter · 蒸汽与齿轮之城</div>
+    <a class="next-cta" id="toChapter2" href="../munich/">
+      <span class="n-arrow">&#8594;</span>
+      <span class="n-name">Chapter 2</span>
+    </a>
+  </div>
 
   <div class="hero">
     <img src="hero.jpg" alt="小王子、小狐狸与玻璃罩里的玫瑰">
@@ -550,6 +569,18 @@ function openChapter(){
   }, 950);
 }
 if(openChapterBtn) openChapterBtn.addEventListener('click', openChapter);
+
+/* ---------- 前往 Chapter 2 · 慕尼黑机械之旅 ---------- */
+const toChapter2 = document.getElementById('toChapter2');
+if(toChapter2){
+  toChapter2.addEventListener('click', (e) => {
+    e.preventDefault();
+    const href = toChapter2.getAttribute('href');
+    document.body.style.transition = 'opacity .5s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => { window.location.href = href; }, 480);
+  });
+}
 </script>
 </body>
 </html>
