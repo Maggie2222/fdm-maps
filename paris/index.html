@@ -181,6 +181,21 @@
   }
   .traveler img{width:100%;height:auto;display:block;}
 
+  /* ---------- footprints (walking trail) ---------- */
+  .footsteps{position:absolute;inset:0;pointer-events:none;z-index:5;}
+  .footprint{
+    position:absolute;width:18px;height:26px;
+    transform:translate(-50%,-50%) rotate(var(--rot,0deg));
+    opacity:0;
+    animation:footFade var(--life,2.8s) ease-out forwards;
+  }
+  .footprint svg{display:block;width:100%;height:100%;}
+  @keyframes footFade{
+    0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(.7);}
+    16%{opacity:.5;}
+    100%{opacity:0; transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1.06);}
+  }
+
   /* ---------- responsive ---------- */
   @media (max-width:919px){
     .map{width:auto;height:auto;display:flex;flex-direction:column;align-items:center;gap:40px;padding:0 4px;}
@@ -203,6 +218,7 @@
   </header>
 
   <div class="map" data-page-node-id="xthK8f39mIlhFsPGEwXCum">
+    <div class="footsteps" id="footsteps"></div>
     <div class="traveler" id="traveler"><img src="prince.png" alt="正在旅行的小王子"></div>
 
     <div class="route" data-page-node-id="Jq8fhIkAF5wpmXADb42zmT">
@@ -348,25 +364,81 @@ const overlay = document.getElementById('overlay');
 const modal = document.getElementById('modal');
 const traveler = document.getElementById('traveler');
 
-function moveTravelerTo(el){
-  if(!el || !traveler) return;
+const footsteps = document.getElementById('footsteps');
+
+function feetPos(el){
+  if(!el) return null;
   const ball = el.querySelector('.planet-img');
-  if(!ball) return;
+  if(!ball) return null;
   const map = traveler.offsetParent;                 // .map
   const br = ball.getBoundingClientRect();
   const mr = map.getBoundingClientRect();
-  const cx = br.left + br.width/2 - mr.left;         // 球心 x
-  const topY = br.top - mr.top;                      // 球顶边缘
-  traveler.style.left = cx + 'px';
-  traveler.style.top  = (topY + 16) + 'px';          // 脚略踩进球顶
+  return {
+    x: br.left + br.width/2 - mr.left,                // 球心 x
+    y: br.top - mr.top + 16                           // 球顶边缘（小王子脚下）
+  };
 }
-moveTravelerTo(document.querySelector('[data-planet="eiffel"]'));  // 初始停在 1 号星球旁
+
+function placeTraveler(el){                           // 初始瞬时落位（无动画）
+  const p = feetPos(el);
+  if(!p) return;
+  traveler.style.transition = 'none';
+  traveler.style.left = p.x + 'px';
+  traveler.style.top  = p.y + 'px';
+}
+
+function dropFootprint(x, y, side){                   // 落下一只脚印，随后自行淡出
+  const f = document.createElement('div');
+  f.className = 'footprint';
+  f.style.left = x + 'px';
+  f.style.top  = y + 'px';
+  f.style.setProperty('--rot', (side ? 17 : -17) + 'deg');
+  f.innerHTML = '<svg viewBox="0 0 18 26"><ellipse cx="9" cy="15" rx="5.2" ry="9" fill="#C0533E"/><circle cx="9" cy="4.6" r="3.1" fill="#C0533E"/></svg>';
+  footsteps.appendChild(f);
+  f.addEventListener('animationend', () => f.remove());
+}
+
+let footTimer = null, modalTimer = null;
+function walkTo(el, onDone){                          // 走过去 + 身后脚印由远到近淡出
+  const target = feetPos(el);
+  if(!target) return;
+  const map = traveler.offsetParent;
+  const mr  = map.getBoundingClientRect();
+  const tr  = traveler.getBoundingClientRect();
+  const sx = tr.left + tr.width/2 - mr.left;          // 当前脚下 x
+  const sy = tr.top  + tr.height  - mr.top;           // 当前脚下 y
+  const dx = target.x - sx, dy = target.y - sy;
+  const dist = Math.hypot(dx, dy);
+  const dur = Math.max(700, Math.min(1700, dist * 1.7));
+
+  traveler.style.transition = 'left ' + dur + 'ms cubic-bezier(.45,.05,.35,1), top ' + dur + 'ms cubic-bezier(.45,.05,.35,1)';
+  traveler.style.left = target.x + 'px';
+  traveler.style.top  = target.y + 'px';
+
+  if(footTimer){ clearInterval(footTimer); footTimer = null; }
+  if(modalTimer){ clearTimeout(modalTimer); modalTimer = null; }
+  const totalSteps = Math.max(1, Math.floor(dist / 30));
+  let i = 0, side = false;
+  const ticks = dur / (totalSteps + 1);
+  footTimer = setInterval(() => {
+    i++;
+    const t = i / (totalSteps + 1);
+    dropFootprint(sx + dx * t, sy + dy * t, side);
+    side = !side;
+    if(i >= totalSteps){ clearInterval(footTimer); footTimer = null; }
+  }, ticks);
+  if(onDone){ modalTimer = setTimeout(onDone, dur + 80); }
+}
+placeTraveler(document.querySelector('[data-planet="eiffel"]'));  // 初始停在 1 号星球旁
 
 function openPlanet(key){
   const p = PLANETS[key];
   if(!p) return;
   const el = document.querySelector('[data-planet="'+key+'"]');
-  moveTravelerTo(el);   // 小王子飞到当前星球
+  walkTo(el, () => showModal(p));   // 小王子先走过去，再弹出介绍
+}
+
+function showModal(p){
   modal.innerHTML = `
     <button class="modal-close" aria-label="关闭">✕</button>
     <div class="m-eyebrow">${p.char} · Station ${p.no}</div>
