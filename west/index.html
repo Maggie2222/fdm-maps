@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美西创新脉络图 · Why Does Innovation Happen Here?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F5EF;
+    --ink:#1C2A33;
+    --muted:#6B6256;
+    --line:#E2DCC9;
+    --blue:#003262;       /* Berkeley blue */
+    --blue-soft:#1E5A8A;
+    --gold:#B07D2B;
+    --gold-soft:#C8901A;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:"Noto Serif SC",Georgia,serif;
+    -webkit-font-smoothing:antialiased;line-height:1.6;
+  }
+  .serif-en{font-family:"Playfair Display",Georgia,serif;}
+
+  /* ---------- Masthead ---------- */
+  .masthead{max-width:880px;margin:0 auto;padding:84px 32px 40px;text-align:center;}
+  .crest{
+    width:92px;height:92px;margin:0 auto 24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1.5px solid var(--gold);background:#FBF8EF;
+    box-shadow:0 6px 20px rgba(0,50,98,.08);
+  }
+  .crest svg{width:54px;height:54px;}
+  .masthead h1{
+    font-family:"Playfair Display",serif;font-weight:700;font-size:30px;
+    color:var(--blue);letter-spacing:.5px;line-height:1.25;
+  }
+  .masthead .cn{font-size:19px;color:var(--ink);font-weight:500;margin-top:8px;}
+  .masthead .sub{
+    margin-top:14px;font-size:13px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--gold);font-family:"Noto Serif SC",serif;
+  }
+  .hair{width:64px;height:1px;background:var(--gold);margin:22px auto 0;}
+
+  /* ---------- Map / Triangle ---------- */
+  .map{position:relative;max-width:780px;margin:18px auto 0;padding:0 24px 40px;}
+  .map .tri{
+    position:absolute;left:50%;top:8px;transform:translateX(-50%);
+    width:min(640px,92%);height:calc(100% - 24px);opacity:.16;pointer-events:none;z-index:0;
+  }
+  .spine{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;}
+
+  /* apex question */
+  .apex{
+    text-align:center;max-width:560px;margin:0 auto 8px;
+    background:var(--blue);color:#fff;border-radius:16px;padding:26px 26px;
+    box-shadow:0 14px 34px rgba(0,50,98,.18);
+  }
+  .apex .tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft);}
+  .apex h2{font-family:"Playfair Display",serif;font-weight:700;font-size:24px;margin-top:8px;line-height:1.3;}
+  .apex .cn{font-size:15px;color:#E7E2D4;margin-top:8px;font-weight:300;}
+
+  /* stage node */
+  .stage{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,50,98,.05);
+  }
+  .stage .head{
+    width:100%;text-align:left;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;gap:16px;padding:18px 22px;font-family:inherit;
+  }
+  .stage .num{
+    flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--blue);color:#fff;font-family:"Playfair Display",serif;font-weight:700;font-size:17px;
+  }
+  .stage .htxt{flex:1;min-width:0;}
+  .stage .cap{
+    font-family:"Playfair Display",serif;font-weight:600;font-size:18px;color:var(--blue);
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .stage .cap .capCn{font-family:"Noto Serif SC",serif;font-weight:400;font-size:14px;color:var(--muted);}
+  .stage .qcn{font-size:14px;color:var(--ink);margin-top:3px;font-weight:300;}
+  .stage .chev{
+    flex:0 0 auto;color:var(--gold);font-size:14px;transition:transform .25s;margin-left:auto;
+  }
+  .stage.open .chev{transform:rotate(180deg);}
+
+  .stage .detail{
+    display:none;padding:0 22px 22px;border-top:1px solid var(--line);
+  }
+  .stage.open .detail{display:block;}
+  .detail .qen{
+    font-family:"Playfair Display",serif;font-style:italic;font-size:18px;color:var(--blue-soft);
+    margin-top:18px;line-height:1.4;
+  }
+  .detail .qcn2{font-size:14px;color:var(--muted);margin-top:2px;font-weight:300;}
+  .detail .courses{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
+  .course{
+    background:#F6F3EA;border-left:3px solid var(--gold);border-radius:6px;padding:12px 14px;
+  }
+  .course .ctitle{font-size:15px;color:var(--ink);font-weight:500;line-height:1.45;}
+  .course .cq{font-family:"Playfair Display",serif;font-style:italic;font-size:15px;color:var(--blue-soft);margin-bottom:5px;line-height:1.4;}
+  .course .prof{margin-top:6px;font-size:13.5px;color:var(--blue);font-weight:500;}
+  .course .prof .school{color:var(--muted);font-weight:300;margin-left:6px;font-size:12.5px;}
+  .detail .answer{
+    margin-top:16px;background:#EAF1F7;border-radius:6px;padding:14px 16px;
+    font-size:14px;color:#244;line-height:1.6;
+  }
+  .detail .answer .lbl{font-weight:600;color:var(--blue);}
+  .detail .answer .cn{display:block;color:var(--muted);font-weight:300;margin-top:4px;font-size:13px;}
+  .why{margin-top:16px;}
+  .why-toggle{
+    display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    font-size:13.5px;color:#fff;background:var(--blue);border:none;
+    padding:7px 14px;border-radius:999px;font-family:inherit;transition:background .15s;
+  }
+  .why-toggle:hover{background:var(--blue-soft);}
+  .why-toggle .arr{font-size:13px;opacity:.9;}
+  .why-box{
+    display:none;margin-top:12px;background:#EAF1F7;border-radius:8px;padding:14px 16px;
+    border-left:3px solid var(--blue);
+  }
+  .why.open .why-box{display:block;}
+  .why-box .answer{margin-top:0;}
+  .why-links{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;}
+  .why-links a{
+    display:inline-flex;align-items:center;gap:5px;font-size:13px;
+    color:var(--blue);text-decoration:none;border:1px solid var(--blue);
+    padding:5px 11px;border-radius:999px;transition:.15s;
+  }
+  .why-links a:hover{background:var(--blue);color:#fff;}
+  .why-links a .arr{font-size:11px;opacity:.8;}
+  .bios{margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+  .bio{
+    background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);
+    border-radius:8px;padding:11px 14px;font-size:13.5px;color:var(--ink);
+    line-height:1.6;font-weight:300;
+  }
+  .bio .bname{display:block;font-weight:600;color:var(--blue);margin-bottom:8px;}
+
+  /* ---------- Campus Walk ---------- */
+  .campus{max-width:600px;margin:6px auto 0;position:relative;z-index:1;}
+  .campus-head{font-size:15px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;font-weight:600;margin:14px auto 10px;width:100%;}
+  .campus-path{display:block;width:100%;max-width:600px;height:auto;margin:0 auto 12px;}
+  .campus-row{display:flex;gap:14px;align-items:stretch;justify-content:center;}
+  .campus-card{
+    flex:1 1 0;background:#FDFCF6;border:1.5px solid var(--blue);border-radius:10px;
+    padding:10px 10px 12px;transform:rotate(-1.5deg);box-shadow:0 10px 24px rgba(0,50,98,.12);
+    text-align:center;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .18s ease;
+  }
+  .campus-card:nth-child(2){transform:rotate(1.5deg);}
+  .campus-card:hover{box-shadow:0 14px 30px rgba(0,50,98,.2);}
+  .campus-card .shot{aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:#F3EEDD;cursor:pointer;}
+  .campus-card .shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s ease;}
+  .campus-card:hover .shot img{transform:scale(1.03);}
+  .c-step{font-size:11px;letter-spacing:1.5px;color:var(--gold);font-weight:600;margin-top:9px;text-transform:uppercase;}
+  .c-cap{font-family:"Playfair Display",serif;font-size:14px;font-weight:600;color:var(--blue);margin-top:2px;}
+  .c-hint{font-size:10.5px;letter-spacing:1px;color:#8A8170;margin-top:8px;text-transform:uppercase;}
+  .c-hint::before{content:"🔍 ";}
+
+  /* ---------- Campus modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;
+    align-items:center;justify-content:center;padding:24px;z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:#fff;border-radius:16px;max-width:600px;width:100%;position:relative;
+    padding:38px;box-shadow:0 30px 70px rgba(0,0,0,.28);animation:rise .25s ease;
+    max-height:86vh;overflow:auto;
+  }
+  @keyframes rise{from{transform:translateY(14px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal .close{
+    position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+    border:none;background:#F0EDD9;cursor:pointer;font-size:16px;color:#6B6155;line-height:34px;
+  }
+  .modal .close:hover{background:#E6E0CB;}
+  .modal .m-school{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+  .modal h3{font-family:"Playfair Display",serif;font-weight:700;font-size:27px;margin:6px 0 2px;color:var(--ink);}
+  .modal .m-cap{font-size:14px;color:var(--muted);font-weight:500;margin-top:4px;}
+  .modal .divider{height:1px;background:var(--line);margin:20px 0;}
+  .c-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .c-tag{font-size:11px;letter-spacing:.5px;padding:4px 10px;border-radius:999px;background:#F0EDD9;color:var(--muted);}
+  .modal .bio-title{font-size:16px;font-weight:600;color:var(--ink);margin:16px 0 10px;}
+  .modal .bio-title .en{font-family:"Playfair Display",serif;display:block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:4px;}
+  .modal p.bio{font-size:14.5px;color:#444;line-height:1.75;margin-bottom:13px;font-weight:300;}
+  .c-link{display:inline-block;margin-top:8px;font-size:13.5px;color:var(--blue);font-weight:500;text-decoration:none;border-bottom:1px solid var(--blue);padding-bottom:1px;}
+  .c-link:hover{opacity:.7;}
+  @media(max-width:680px){
+    .campus{max-width:100%;padding:0 2px;}
+    .campus-row{gap:10px;}
+    .c-cap{font-size:12.5px;}
+    .modal{padding:30px 24px;}
+  }
+
+  /* final question */
+  .final{
+    text-align:center;max-width:600px;margin:22px auto 0;
+    background:linear-gradient(180deg,#003262,#0A2A45);color:#fff;border-radius:16px;padding:30px 28px;
+    box-shadow:0 14px 34px rgba(0,50,98,.2);
+  }
+  .final .tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft);}
+  .final p{font-family:"Playfair Display",serif;font-size:18px;line-height:1.5;margin-top:12px;}
+  .final .cn{font-size:14.5px;color:#D7DEE6;margin-top:12px;font-weight:300;font-family:"Noto Serif SC",serif;}
+
+  footer{max-width:880px;margin:0 auto;padding:0 32px 70px;text-align:center;color:var(--muted);font-size:13px;font-weight:300;}
+
+  @media(max-width:680px){
+    .masthead{padding-top:56px;}
+    .stage .head{padding:16px 16px;gap:12px;}
+    .map{padding:0 14px 30px;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="crest">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M32 6 L58 54 L6 54 Z" stroke="#B07D2B" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M32 20 L46 48 L18 48 Z" stroke="#003262" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="32" cy="40" r="3" fill="#003262"/>
+      </svg>
+    </div>
+    <h1 class="serif-en">Why Does Innovation Happen Here?</h1>
+    <div class="cn">美西创新脉络图 · 从硅谷到未来的十条脉络</div>
+    <div class="sub">A West-Coast Innovation Lineage</div>
+    <div class="hair"></div>
+  </header>
+
+  <main class="map">
+    <svg class="tri" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <polygon points="50,3 4,97 96,97" fill="none" stroke="#003262" stroke-width="0.6" stroke-dasharray="2 2"/>
+    </svg>
+    <div class="spine" id="spine"></div>
+  </main>
+
+  <footer>美西创新脉络图 · 课程内容请以院校官方资料为准</footer>
+
+  <!-- Campus modal -->
+  <div class="overlay" id="campusOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="close" id="campusCloseBtn" aria-label="关闭">✕</button>
+      <div id="campusModalBody"></div>
+    </div>
+  </div>
+
+<script>
+  const STAGES = [
+    {
+      n:"①", cap:"ECOSYSTEM", capCn:"生态系统",
+      q:"Why Silicon Valley?", qCn:"为什么是硅谷？",
+      courses:[{title:"The Inside History of Silicon Valley, and the 6 Pillars of Effective Entrepreneurial Ecosystems",
+        prof:"Prof. Mark Coopersmith", school:"UC Berkeley · Haas", link:"https://executive.berkeley.edu/faculty-directory/mark-coopersmith", bio:"Mark Coopersmith：硅谷创业者、投资人和 Berkeley 创业教育者，曾创办被 Google 收购的 WebOrder，长期研究创业与创新生态系统。"}],
+      answer:"Innovation doesn't happen in a vacuum. What makes an ecosystem capable of producing innovation repeatedly?",
+      answerCn:"创新不会在真空中发生。是什么让一个生态系统能够持续不断地孕育创新？"
+    },
+    {
+      n:"②", cap:"ENTREPRENEUR", capCn:"创业者",
+      q:"Who creates innovation?", qCn:"谁在创造创新？",
+      courses:[{title:"The Toolset, Skill Set, and Mindset of Silicon Valley Entrepreneurs",
+        prof:"Prof. Mark Coopersmith", school:"UC Berkeley · Haas", link:"https://executive.berkeley.edu/faculty-directory/mark-coopersmith", bio:"Mark Coopersmith：硅谷创业者、投资人和 Berkeley 创业教育者，曾创办被 Google 收购的 WebOrder，长期研究创业与创新生态系统。"}],
+      answer:"What kind of people does this ecosystem produce?",
+      answerCn:"这个生态系统培养出了什么样的人？"
+    },
+    {
+      n:"③", cap:"DISCOVERY", capCn:"发现",
+      q:"Where does breakthrough begin?", qCn:"突破从哪里开始？",
+      courses:[
+        {title:"A Conversation with a Nobel Laureate", prof:"Prof. Randy Schekman", school:"UC Berkeley · MCB", link:"https://vcresearch.berkeley.edu/faculty/randy-schekman", bio:"Randy Schekman：2013 年诺贝尔生理学或医学奖得主，研究细胞内囊泡运输机制。"},
+        {title:"Advancements in Materials Science — Liquid Sunlight", prof:"Prof. Peidong Yang", school:"UC Berkeley · Chemistry", link:"https://vcresearch.berkeley.edu/faculty/peidong-yang", bio:"Peidong Yang：国际知名纳米材料与能源科学家，研究人工光合作用、纳米材料和太阳能燃料。"}
+      ],
+      answer:"Does innovation begin with a market problem—or with a scientific discovery?",
+      answerCn:"创新是始于市场需求，还是始于科学发现？"
+    },
+    {
+      n:"④", cap:"TRANSLATION", capCn:"转化",
+      q:"How does science become technology?", qCn:"科学如何变成技术？",
+      courses:[{title:"Bakar Bio Enginuity Hub", prof:"Dr. Susan Jenkins", school:"UC Berkeley · Bakar", link:"https://bio.bakarlabs.org/campus-programs/neurotech-collider-lab/", bio:"Susan Jenkins：Bakar BioEnginuity Hub / Bakar Fellows 项目负责人，专注科研成果转化与生物科技创业生态。"}],
+      answer:"How does scientific discovery become something people can actually use?",
+      answerCn:"科学发现如何变成人们真正可以使用的东西？"
+    },
+    {
+      n:"⑤", cap:"COMMERCIALIZATION", capCn:"商业化",
+      q:"How does technology reach the market?", qCn:"技术如何走向市场？",
+      courses:[{title:"Commercializing Deep Tech Innovations: From Lab to Market — Frameworks, Tools and Case Studies",
+        prof:"Prof. Matt Rappaport", school:"UC Berkeley", link:"https://funginstitute.berkeley.edu/people/matthew-rappaport/", bio:"Matt Rappaport：Berkeley Deep Tech Innovation Lab 联合创始人，关注深科技从实验室走向商业市场。"}],
+      answer:"Can we commercialize it?",
+      answerCn:"我们能把它商业化吗？"
+    },
+    {
+      n:"⑥", cap:"CAPITAL", capCn:"资本",
+      q:"Who decides which innovation survives?", qCn:"谁决定哪项创新能活下来？",
+      courses:[
+        {cq:"Who will bet on the future?", title:"Startup Path to Funding & VC Risk Categories",
+          prof:"Prof. Mark Coopersmith", school:"UC Berkeley · Haas", link:"https://executive.berkeley.edu/faculty-directory/mark-coopersmith", bio:"Mark Coopersmith：硅谷创业者、投资人和 Berkeley 创业教育者，曾创办被 Google 收购的 WebOrder，长期研究创业与创新生态系统。"},
+        {cq:"Would you bet on it?", title:"Startup Investing: Venture Capital Simulation",
+          prof:"Prof. Mark Coopersmith", school:"UC Berkeley · Haas", link:"https://executive.berkeley.edu/faculty-directory/mark-coopersmith"}
+      ],
+      answer:"How does capital decide which innovations deserve a chance?",
+      answerCn:"资本如何决定哪些创新值得获得一次机会？"
+    },
+    {
+      n:"⑦", cap:"INFRASTRUCTURE", capCn:"基础设施",
+      q:"How does an idea become a company?", qCn:"一个想法如何成为一家公司？",
+      courses:[{title:"Berkeley SkyDeck", prof:"Ekin Gunyasu", school:"UC Berkeley · SkyDeck", link:"https://skydeck.berkeley.edu/our_team/", bio:"Ekin Gunyasu：Berkeley SkyDeck 创业生态实践者，帮助学生从加速器与创业者视角理解创新如何从想法走向市场。"}],
+      answer:"What happens between an idea and a real company?",
+      answerCn:"在「想法」和「真正的公司」之间，发生了什么？"
+    },
+    {
+      n:"⑧", cap:"SOCIETY & FUTURE", capCn:"社会与未来",
+      q:"What happens when technology changes society?", qCn:"当技术改变社会时，会发生什么？",
+      courses:[{title:"AI Ethics / Scenario Planning", prof:"Prof. David Evan Harris", school:"UC Berkeley", link:"https://haas.berkeley.edu/faculty/harris-david/", bio:"David Evan Harris：Berkeley Chancellor's Public Scholar，曾在 Meta 负责 Responsible AI、社会影响与 Civic Integrity。"}],
+      answer:"What happens when innovation changes faster than society can adapt?",
+      answerCn:"当创新演进得比社会适应得更快时，会发生什么？"
+    },
+    {
+      n:"⑨", cap:"REAL-WORLD TEST", capCn:"真实世界检验",
+      q:"Can innovation actually scale?", qCn:"创新真的能规模化吗？",
+      courses:[{title:"Self-Driving Cars: The Past, Present, and Future", prof:"Prof. Scott Moura", school:"UC Berkeley · CEE", link:"https://ce.berkeley.edu/people/faculty/moura", bio:"Scott Moura：Berkeley 交通与能源系统专家，研究自动驾驶、电动车、智能交通与能源基础设施。"}],
+      answer:"Can an ecosystem turn an idea into a new way of living?",
+      answerCn:"一个生态系统能否把一个想法变成一种新的生活方式？"
+    },
+    {
+      n:"⑩", cap:"INFLUENCE", capCn:"影响力",
+      q:"How does innovation change human behavior?", qCn:"创新如何改变人类行为？",
+      courses:[{title:"Think Critically, Act Creatively: An Insider's Guide To U.S. Digital Marketing And The Influencer Economy", prof:"Prof. Freddy Nager", school:"USC · Annenberg", link:"https://annenberg.usc.edu/faculty/freddy-tran-nager", bio:"Freddy Tran Nager：拥有30多年数字媒体和营销经验的 USC Annenberg 教授，专长影响力营销与数字媒体。"}],
+      answer:"Why do some innovations change behavior, while others never leave the lab?",
+      answerCn:"为什么有些创新改变了行为，而有些却从未走出实验室？"
+    }
+  ];
+
+  const spine = document.getElementById("spine");
+
+  // apex
+  const apex = document.createElement("div");
+  apex.className = "apex";
+  apex.innerHTML = `<div class="tag">The Question</div>
+    <h2 class="serif-en">Why Does Innovation Happen Here?</h2>
+    <div class="cn">创新，为何发生在这里？</div>`;
+  spine.appendChild(apex);
+
+  // ---------- Campus Walk · 三校巡礼（点击手绘图看介绍） ----------
+  const CAMPUSES = {
+    berkeley:{
+      school:"UC Berkeley · 伯克利加州大学",
+      name:"Sather 塔（Campanile）",
+      cap:"第一站 · STOP 1",
+      tags:["加州大学系统旗舰","1868 年建校"],
+      body:[
+        "UC Berkeley（加州大学伯克利分校）建于 1868 年，是加州大学系统的旗舰与创始校区，也是世界顶尖的公立研究型大学。校园地标 Sather 塔（Campanile）高约 94 米，塔顶可俯瞰整个旧金山湾区。",
+        "Berkeley 紧邻硅谷，先后诞生了百余位诺贝尔奖得主，也孕育了自由言论运动等深刻改变社会的思潮。从 BSD Unix 到开放开源传统，它把公立大学的公共使命与湾区的创业精神连接在一起。",
+        "在创新版图上，Berkeley 与斯坦福共同构成湾区的「人才发动机」——工程、科学、商业在这里交汇，让「改变世界」从口号变成方法论。"
+      ],
+      link:{text:"参考：UC Berkeley 官网", url:"https://www.berkeley.edu/"}
+    },
+    stanford:{
+      school:"Stanford · 斯坦福大学",
+      name:"主四方院拱廊",
+      cap:"第二站 · STOP 2",
+      tags:["硅谷摇篮","1885 年建校"],
+      body:[
+        "斯坦福大学由 Leland 和 Jane Stanford 夫妇于 1885 年创立，主校区以 Mission Revival 风格的砂岩拱廊与棕榈树闻名，被誉为美国最美的校园之一。",
+        "斯坦福被称为「硅谷的摇篮」——惠普、谷歌、思科、特斯拉等公司的创始人与斯坦福密切相关，斯坦福工业园更是「硅谷」这个名字的起点。",
+        "从 Frederick Terman 教授鼓励师生在本地创业，到 d.school 的设计思维，斯坦福把「学术」与「创业」焊接成一种文化：创新不是偶然，而是被系统性培养的能力。"
+      ],
+      link:{text:"参考：Stanford 官网", url:"https://www.stanford.edu/"}
+    },
+    usc:{
+      school:"USC · 南加州大学",
+      name:"Tommy Trojan 雕像",
+      cap:"第三站 · STOP 3",
+      tags:["加州最古老私立研究型大学之一","1880 年建校"],
+      body:[
+        "南加州大学（University of Southern California）创建于 1880 年，是加州历史最悠久的私立研究型大学之一。校园中心的 Tommy Trojan 雕像是全体特洛伊人的精神图腾。",
+        "USC 的电影艺术学院常年位居全美第一，Annenberg 传播学院、马歇尔商学院与维特比工程学院也都在各自领域领先——好莱坞与科技产业的交界，让 USC 天然站在「内容 × 技术」的十字路口。",
+        "庞大的「特洛伊家族」校友网络遍布全球，从娱乐产业到航天工程，USC 以强连接的社区文化，把洛杉矶这座城市的故事讲给世界。"
+      ],
+      link:{text:"参考：USC 官网", url:"https://www.usc.edu/"}
+    }
+  };
+
+  const campus = document.createElement("div");
+  campus.className = "campus";
+  campus.innerHTML = `
+    <div class="campus-head">Campus Walk · 校园巡礼</div>
+    <svg class="campus-path" viewBox="0 0 600 38" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M90 19 H 510" stroke="#98A2AD" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6 6"/>
+      <circle cx="90" cy="19" r="3" fill="#98A2AD"/>
+      <circle cx="300" cy="19" r="3" fill="#98A2AD"/>
+      <circle cx="510" cy="19" r="3" fill="#98A2AD"/>
+    </svg>
+    <div class="campus-row">
+      <div class="campus-card" data-campus="berkeley">
+        <div class="shot"><img src="berkeley-sketch.jpg" alt="伯克利 Sather 塔手绘"></div>
+        <div class="c-step">第一站 · STOP 1</div>
+        <div class="c-cap">UC Berkeley · 伯克利</div>
+        <div class="c-hint">点击查看介绍</div>
+      </div>
+      <div class="campus-card" data-campus="stanford">
+        <div class="shot"><img src="stanford-sketch.jpg" alt="斯坦福拱廊手绘"></div>
+        <div class="c-step">第二站 · STOP 2</div>
+        <div class="c-cap">Stanford · 斯坦福</div>
+        <div class="c-hint">点击查看介绍</div>
+      </div>
+      <div class="campus-card" data-campus="usc">
+        <div class="shot"><img src="usc-trojan.jpg" alt="USC Tommy Trojan 手绘"></div>
+        <div class="c-step">第三站 · STOP 3</div>
+        <div class="c-cap">USC · 南加州</div>
+        <div class="c-hint">点击查看介绍</div>
+      </div>
+    </div>`;
+  spine.appendChild(campus);
+
+  STAGES.forEach((s, i) => {
+    const stage = document.createElement("section");
+    stage.className = "stage";
+
+    const coursesHtml = s.courses.map(c => `
+      <div class="course">
+        ${c.cq ? `<div class="cq">${c.cq}</div>` : ""}
+        <div class="ctitle">${c.title}</div>
+        <div class="prof">${c.prof}<span class="school">${c.school}</span></div>
+      </div>`).join("");
+
+    const seenLinks = new Set();
+    const whyLinksHtml = s.courses.map(c => {
+      if (seenLinks.has(c.link)) return "";
+      seenLinks.add(c.link);
+      return `
+      <a href="${c.link}" target="_blank" rel="noopener">查看 ${c.prof} 官网 <span class="arr">↗</span></a>`;
+    }).join("");
+
+    const biosHtml = s.courses.map(c => c.bio ? `
+      <div class="bio"><span class="bname">${c.prof}</span>${c.bio.replace(/^[^：:]+[：:]/, "")}</div>` : "").join("");
+
+    stage.innerHTML = `
+      <button class="head" aria-expanded="false">
+        <span class="num">${s.n}</span>
+        <span class="htxt">
+          <span class="cap">${s.cap}<span class="capCn">${s.capCn}</span></span>
+        </span>
+        <span class="chev">▼ 点击后展开</span>
+      </button>
+      <div class="detail">
+        <div class="qen">${s.q}</div>
+        <div class="qcn2">${s.qCn}</div>
+        <div class="courses">${coursesHtml}</div>
+        <div class="answer">
+          <span class="lbl">这门课要回答的问题：</span>${s.answer}
+          <span class="cn">${s.answerCn}</span>
+        </div>
+        <div class="why">
+          <button class="why-toggle" aria-expanded="false">为什么是他 / 她 <span class="arr">＋</span></button>
+          <div class="why-box">
+            ${biosHtml ? `<div class="bios">${biosHtml}</div>` : ""}
+            <div class="why-links">${whyLinksHtml}</div>
+          </div>
+        </div>
+      </div>`;
+
+    const head = stage.querySelector(".head");
+    head.addEventListener("click", () => {
+      const open = stage.classList.toggle("open");
+      head.setAttribute("aria-expanded", open ? "true" : "false");
+      head.querySelector(".chev").textContent = open ? "▲ 收起" : "▼ 点击后展开";
+    });
+
+    const whyToggle = stage.querySelector(".why-toggle");
+    if (whyToggle) {
+      whyToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = stage.querySelector(".why").classList.toggle("open");
+        whyToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        whyToggle.querySelector(".arr").textContent = open ? "－" : "＋";
+      });
+    }
+
+    spine.appendChild(stage);
+  });
+
+  // final question
+  const final = document.createElement("div");
+  final.className = "final";
+  final.innerHTML = `<div class="tag">Final Question</div>
+    <p class="serif-en">Innovation doesn't happen because one person has a brilliant idea. It happens when an ecosystem connects people, science, capital, institutions, infrastructure, markets and imagination.</p>
+    <div class="cn">创新之所以发生，不是因为某个人有了一个绝妙的点子；而是当一个生态系统把人、科学、资本、制度、基础设施、市场与想象力都连接在了一起。</div>`;
+  spine.appendChild(final);
+
+  // ---------- Campus modal ----------
+  const campusOverlay = document.getElementById("campusOverlay");
+  const campusModalBody = document.getElementById("campusModalBody");
+  function openCampusModal(key){
+    const c = CAMPUSES[key];
+    campusModalBody.innerHTML = `
+      <div class="m-school">${c.school}</div>
+      <h3>${c.name}</h3>
+      <div class="m-cap">${c.cap}</div>
+      <div class="divider"></div>
+      <div class="c-tags">${c.tags.map(t=>`<span class="c-tag">${t}</span>`).join("")}</div>
+      <div class="bio-title"><span class="en">About</span>校园介绍</div>
+      ${c.body.map(b=>`<p class="bio">${b}</p>`).join("")}
+      <a class="c-link" href="${c.link.url}" target="_blank" rel="noopener">${c.link.text} ↗</a>`;
+    campusOverlay.classList.add("show");
+  }
+  function closeCampusModal(){ campusOverlay.classList.remove("show"); }
+
+  document.addEventListener("click", e=>{
+    const card = e.target.closest("[data-campus]");
+    if(card){ openCampusModal(card.dataset.campus); }
+  });
+  document.getElementById("campusCloseBtn").addEventListener("click", closeCampusModal);
+  campusOverlay.addEventListener("click", e=>{ if(e.target===campusOverlay) closeCampusModal(); });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCampusModal(); });
+</script>
+</body>
+</html>

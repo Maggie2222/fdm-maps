@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Future Decision Maker Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FAFAF7;
+    --ink:#1A1A1A;
+    --muted:#5C574C;
+    --line:#E5E0CB;
+    --navy:#003B5C;
+    --crimson:#A51C30;
+    --green:#0E4D3C;
+    --gold:#7D5A2F;
+    --slate:#34556B;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC",Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+  .serif-en{font-family:"Playfair Display",Georgia,serif;}
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    max-width:880px;margin:0 auto;padding:96px 32px 56px;text-align:center;
+  }
+  .crest{
+    width:96px;height:96px;margin:0 auto 28px;border-radius:50%;
+    border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 38%, #fff 0%, #F0EDD9 100%);
+    box-shadow:0 6px 22px rgba(125,90,47,.12);
+  }
+  .crest span{font-family:"Playfair Display",serif;font-weight:700;font-size:26px;color:var(--navy);letter-spacing:1px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);
+    margin-bottom:18px;font-weight:500;
+  }
+  .masthead h1{
+    font-family:"Playfair Display",serif;font-weight:700;font-size:clamp(34px,6vw,54px);
+    color:var(--ink);line-height:1.1;letter-spacing:.5px;
+  }
+  .masthead .sub{font-size:20px;color:var(--muted);margin-top:14px;font-weight:300;}
+  .hairline{width:120px;height:1px;background:var(--gold);margin:30px auto 0;}
+  .intro{max-width:620px;margin:26px auto 0;font-size:15px;color:var(--muted);font-weight:300;}
+  .start-hint{margin-top:34px;font-size:13px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+  .start-hint .arrow{display:block;font-size:22px;margin-top:6px;animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* ---------- Map spine ---------- */
+  .map{
+    max-width:920px;margin:0 auto;padding:10px 24px 120px;position:relative;
+  }
+  .tier{position:relative;text-align:center;padding:26px 0;}
+  /* vertical connector between tiers */
+  .tier::before{
+    content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:1px;height:26px;background:var(--line);
+  }
+  .tier:first-child::before{display:none;}
+
+  .cap-label{
+    display:inline-block;font-family:"Playfair Display",serif;font-weight:600;
+    font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#fff;
+    padding:7px 18px;border-radius:999px;margin-bottom:8px;
+  }
+  .cap-cn{font-size:15px;color:var(--ink);font-weight:500;margin-bottom:22px;}
+  .cap-cn.dim{color:var(--muted);font-weight:300;}
+
+  /* leader node */
+  .leader-node{
+    max-width:540px;margin:0 auto;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:30px 28px;box-shadow:0 10px 30px rgba(0,59,92,.07);
+  }
+  .leader-node h2{font-family:"Playfair Display",serif;font-weight:700;font-size:28px;color:var(--navy);}
+  .leader-node p{color:var(--muted);font-size:16px;margin-top:8px;font-weight:300;}
+
+  /* node row */
+  .nodes{display:grid;gap:18px;max-width:760px;margin:0 auto;}
+  .nodes.cols-2{grid-template-columns:1fr 1fr;}
+  .nodes.cols-3{grid-template-columns:repeat(3,1fr);}
+
+  .node{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);text-align:left;display:flex;min-width:0;
+  }
+  .node .accent{width:4px;flex:0 0 4px;}
+  .node .inner{flex:1;padding:20px 22px;min-width:0;}
+  .node .school{
+    display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    padding:3px 10px;border-radius:999px;background:#F0EDD9;color:var(--muted);margin-bottom:12px;
+  }
+  .node .name{
+    font-family:"Playfair Display",serif;font-weight:600;font-size:19px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;flex-wrap:wrap;
+    padding:0;transition:opacity .15s;max-width:100%;
+  }
+  .node .name .name-cn{font-family:"Noto Serif SC",serif;font-weight:500;font-size:16px;}
+  .node .name::after{content:"↗";font-family:"Noto Serif SC",serif;font-size:14px;opacity:.6;}
+  .node .name:hover{opacity:.62;}
+  .node .course{
+    margin-top:0;font-size:13px;color:var(--gold);cursor:pointer;font-style:italic;
+    display:inline-flex;align-items:center;gap:6px;border:none;background:none;padding:0;
+    font-family:"Noto Serif SC",serif;white-space:normal;word-break:break-word;max-width:100%;
+  }
+  .node .course::before{content:"❖";font-style:normal;font-size:11px;}
+  .node .course:hover{text-decoration:underline;}
+  .node .actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:12px;}
+  .node .pq{
+    margin-top:10px;display:flex;gap:10px;align-items:flex-start;
+    background:#F7F4E9;border-left:3px solid var(--gold);border-radius:4px;
+    padding:10px 12px;font-family:"Noto Serif SC",serif;font-size:14.5px;line-height:1.5;color:#3A352C;
+    overflow-wrap:anywhere;word-break:break-word;
+  }
+  .node .pq > span:last-child{flex:1;min-width:0;}
+  .node .pq .pq-mark{
+    flex:0 0 auto;font-family:"Playfair Display",serif;font-weight:700;font-size:13px;
+    color:#fff;background:var(--gold);width:20px;height:20px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;margin-top:1px;
+  }
+  .node .bio-btn{
+    font-size:13px;color:var(--navy);cursor:pointer;border:none;background:none;padding:0;
+    font-family:"Noto Serif SC",serif;font-weight:500;
+  }
+  .node .bio-btn:hover{text-decoration:underline;}
+
+  /* future fork */
+  .tier.fork::before{
+    background:repeating-linear-gradient(to bottom, var(--slate) 0 4px, transparent 4px 9px);
+    opacity:.55;
+  }
+  .fork-node{
+    max-width:600px;margin:0 auto;background:#F4F1E6;border:1px dashed var(--slate);
+    border-radius:14px;padding:24px 28px;text-align:left;
+  }
+  .fork-node .fork-glyph{font-size:22px;color:var(--slate);margin-bottom:6px;}
+  .fork-node p{font-size:15px;color:var(--muted);font-weight:300;line-height:1.7;}
+
+  /* YOU node */
+  .you-node{
+    max-width:520px;margin:0 auto;background:var(--ink);color:#fff;border-radius:14px;
+    padding:34px 28px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.18);
+  }
+  .you-node .star{font-size:22px;color:var(--gold);}
+  .you-node h2{font-family:"Playfair Display",serif;font-weight:700;font-size:30px;margin-top:8px;}
+  .you-node .cn{font-size:18px;font-weight:300;margin-top:6px;color:#E9E5D6;}
+  .you-node p{font-size:14px;color:#C9C3B4;margin-top:14px;font-weight:300;}
+
+  /* campus tour branch — grows from YOU */
+  .tour-branch{max-width:600px;margin:-2px auto 36px;position:relative;}
+  .tour-head{font-size:15px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;font-weight:600;margin:16px auto 10px;width:100%;}
+  .tour-path{display:block;width:100%;max-width:600px;height:auto;margin:0 auto 12px;}
+  .tour-row{display:flex;gap:14px;align-items:stretch;justify-content:center;}
+  .tour-card{
+    flex:1 1 0;background:#FDFCF6;border:1.5px solid var(--navy);border-radius:10px;
+    padding:10px 10px 12px;transform:rotate(-1.5deg);box-shadow:0 10px 24px rgba(0,59,92,.12);
+    text-align:center;display:flex;flex-direction:column;
+  }
+  .tour-card:nth-child(2){transform:rotate(1.5deg);}
+  .tour-card .shot{aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:#F3EEDD;}
+  .tour-card .shot img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tour-step{font-size:11px;letter-spacing:1.5px;color:var(--gold);font-weight:600;margin-top:9px;text-transform:uppercase;}
+  .tour-cap{font-family:"Playfair Display",serif;font-size:15px;font-weight:600;color:var(--navy);margin-top:2px;}
+  @media(max-width:680px){
+    .tour-branch{max-width:100%;padding:0 20px;}
+    .tour-row{gap:10px;}
+    .tour-cap{font-size:13px;}
+  }
+  /* tour card clickable + hint */
+  .tour-card{cursor:pointer;transition:box-shadow .18s ease;}
+  .tour-card:hover{box-shadow:0 14px 30px rgba(0,59,92,.18);}
+  .tour-card .shot{cursor:pointer;transition:transform .2s ease;}
+  .tour-card:hover .shot img{transform:scale(1.03);}
+  .tour-hint{font-size:10.5px;letter-spacing:1px;color:#8A8170;margin-top:8px;text-transform:uppercase;}
+  .tour-hint::before{content:"🔍 ";font-style:normal;}
+  /* tour modal extras */
+  .tour-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .tour-tag{font-size:11px;letter-spacing:.5px;padding:4px 10px;border-radius:999px;background:#F0EDD9;color:var(--muted);}
+  .tour-link{display:inline-block;margin-top:10px;font-size:14px;color:var(--navy);font-weight:500;text-decoration:none;border-bottom:1px solid var(--navy);padding-bottom:1px;}
+  .tour-link:hover{opacity:.7;}
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;
+    align-items:center;justify-content:center;padding:24px;z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:#fff;border-radius:16px;max-width:600px;width:100%;position:relative;
+    padding:40px;box-shadow:0 30px 70px rgba(0,0,0,.28);animation:rise .25s ease;
+    max-height:86vh;overflow:auto;
+  }
+  @keyframes rise{from{transform:translateY(14px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal .close{
+    position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+    border:none;background:#F0EDD9;cursor:pointer;font-size:16px;color:#6B6155;line-height:34px;
+  }
+  .modal .close:hover{background:#E6E0CB;}
+  .modal .m-school{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+  .modal h3{font-family:"Playfair Display",serif;font-weight:700;font-size:30px;margin:6px 0 2px;color:var(--ink);}
+  .modal .m-cn{font-size:16px;color:var(--muted);font-weight:500;}
+  .modal .m-course{font-size:13px;color:var(--gold);font-style:italic;margin-top:10px;}
+  .modal .divider{height:1px;background:var(--line);margin:22px 0;}
+  .modal .q-en{font-family:"Playfair Display",serif;font-weight:600;font-size:23px;color:var(--navy);line-height:1.3;}
+  .modal .q-cn{font-size:17px;color:var(--ink);margin-top:10px;font-weight:500;}
+  .modal .bio-title{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+  .modal .bio-title .en{font-family:"Playfair Display",serif;display:block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:4px;}
+  .modal p.bio{font-size:15px;color:#444;line-height:1.75;margin-bottom:14px;font-weight:300;}
+
+  footer{max-width:880px;margin:0 auto;padding:0 32px 70px;text-align:center;color:var(--muted);font-size:13px;font-weight:300;}
+
+  @media(max-width:680px){
+    .nodes.cols-2,.nodes.cols-3{grid-template-columns:1fr;}
+    .masthead{padding-top:64px;}
+    .modal{padding:30px 24px;}
+  }
+</style>
+<script src="https://beacon.cdn.qq.com/sdk/4.5.9/beacon_web.min.js"></script>
+<script>
+(function(){
+  try{
+    var beacon=new BeaconAction({
+      appkey:'0WEB06U85YBSLJNL',
+      versionCode:'1.0.0',
+      channelID:'share',
+      delay:1000,
+      sessionDuration:30*60*1000,
+      isOversea:false,
+      needReportRqdEvent:false
+    });
+    beacon.onDirectUserAction('preview_page_view',{
+      'url':location.href,
+      'referrer':document.referrer,
+      'title':document.title,
+      'sandbox_id':'96f3cd24a0cd4ef781d91c24cecea588'
+    });
+  }catch(e){}
+})();
+</script></head>
+<body>
+
+  <header class="masthead">
+    <div class="crest"><span>FDM</span></div>
+    <h1 class="serif-en">Future Decision Maker Map</h1>
+    <div class="sub">A Journey From You To The Leader</div>
+    <div class="hairline"></div>
+    <p class="intro">这是一张自上而下展开的决策者地图。从顶端「你的起点」出发，沿脉络向下，最终抵达「我如何影响未来」。点击教授姓名前往学校官方介绍页；点击「为什么是他 / 她」查看简介，点击课程名查看它要回答的问题。在「你的起点」下方的校园导览中，点击任一手绘插画，可查看该站的主讲人介绍。</p>
+    <div class="start-hint">从这里开始 · Start<span class="arrow">↓</span></div>
+  </header>
+
+  <main class="map" id="map"></main>
+
+  <footer>Future Decision Maker Map · 课程内容请以官方资料为准。</footer>
+
+  <!-- Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <button class="close" id="closeBtn" aria-label="关闭">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+<script>
+  // ---------- Data ----------
+  const PROFESSORS = {
+    zoe: {
+      name:"Zoe Chance", cn:"", school:"Yale", capColor:"navy", url:"https://som.yale.edu/faculty-research/faculty-directory/zoe-chance",
+      pq:"没有权力时，你如何让别人愿意听你？",
+      course:"Influence & Persuasion",
+      qEN:"How do we move others without manipulation?",
+      qCN:"如何在影响他人的同时保持真诚？",
+      bio:[
+        "Zoe Chance 的研究聚焦影响力与说服的本质——真正的说服不是操控，而是帮助他人做出更好的决定。",
+        "她所著《Influence Is Your Superpower》把行为科学转化为每个人都能用的日常影响力工具，主张「善意的影响力」才是持久的领导力来源。"
+      ]
+    },
+    gautam: {
+      name:"Gautam Mukunda", cn:"", school:"Yale", capColor:"navy", url:"https://som.yale.edu/faculty-research/faculty-directory/gautam-mukunda",
+      pq:"一个人究竟能够改变多少历史？",
+      course:"US-China Relations",
+      qEN:"Who shapes history, and how?",
+      qCN:"谁在塑造历史，又是以何种方式？",
+      bio:[
+        "Gautam Mukunda 研究领导力与历史走向——少数关键领导者的抉择，足以把历史推向截然不同的分支。",
+        "他尤其关注美中关系这一塑造 21 世纪的关键变量，强调理解领导力，就是理解未来被谁、以何种方式改写。"
+      ]
+    },
+    jidong: {
+      name:"Jidong Zhou", cn:"", school:"Yale", capColor:"green", url:"https://economics.yale.edu/people/jidong-zhou",
+      pq:"战略究竟是选择什么，还是放弃什么？",
+      course:"Strategic Decision Making",
+      qEN:"What should we choose not to do?",
+      qCN:"战略的本质，是选择做什么，还是放弃不做什么？",
+      bio:[
+        "Jidong Zhou 从战略决策视角切入，追问一个常被忽视的命题：战略的关键往往不在于追逐，而在于取舍。",
+        "他强调，在资源有限的现实里，放弃比追逐更需要勇气与判断。真正的战略，体现在「不做什么」的纪律中。"
+      ]
+    },
+    frank: {
+      name:"Frank Zhang", cn:"", school:"Yale", capColor:"green", url:"https://som.yale.edu/faculty-research/faculty-directory/x-frank-zhang",
+      pq:"当资源有限，什么值得被投入？",
+      course:"Yale Model and Asset Allocation",
+      qEN:"How do we prepare for an uncertain future?",
+      qCN:"当我们无法预知未来时，该如何为多种可能做准备？",
+      bio:[
+        "Frank Zhang 以耶鲁投资模式（Yale Model）为脉络，探讨在长期不确定性中如何配置资产、构建韧性。",
+        "他的核心问题是：当我们无法预知赢家时，应当如何为多种未来做准备？答案不在押注，而在组合与纪律。"
+      ]
+    },
+    daylian: {
+      name:"Daylian Cain", cn:"", school:"Yale", capColor:"crimson", url:"https://som.yale.edu/faculty-research/faculty-directory/daylian-cain",
+      pq:"为什么有些人能看到别人看不到的机会？",
+      course:"Art of Discovery",
+      qEN:"How do innovators see what others miss?",
+      qCN:"创新者眼中的世界，与普通人究竟有何不同？",
+      bio:[
+        "Daylian Cain 研究「发现」本身——创新者眼中的世界，与普通人究竟有何不同？",
+        "他主张，创新不是预测未来，而是重新框定问题、发现被多数人忽略的机会。真正的洞察，源于看待问题的方式。"
+      ]
+    },
+    barry: {
+      name:"Barry Nalebuff", cn:"", school:"Yale", capColor:"crimson", url:"https://som.yale.edu/faculty-research/faculty-directory/barry-nalebuff",
+      pq:"一个好想法，为什么不一定能成为好企业？",
+      course:"Lessons from Honest Tea",
+      qEN:"How do we turn an idea into reality?",
+      qCN:"如何把一个想法，真正变成现实？",
+      bio:[
+        "Barry Nalebuff 是耶鲁管理学院教授、Honest Tea 联合创始人，把博弈论与战略思维写进《Thinking Strategically》。",
+        "他以亲身创业经验讲述：伟大的点子不缺，缺的是把它落到现实的能力——从配方、供应链到市场，每一步都是战略。"
+      ]
+    },
+    david: {
+      name:"David Tate", cn:"", school:"Yale", capColor:"gold", url:"https://medicine.yale.edu/profile/david-tate/",
+      pq:"不同的人，如何真正一起工作？",
+      course:"Connecting Across Differences",
+      qEN:"How does difference become strength?",
+      qCN:"差异如何转化为组织的力量，而非冲突？",
+      bio:[
+        "David Tate 探讨差异如何转化为组织力量。他追问：为何不同背景的人共处，有时激发创新，有时却引发冲突？",
+        "他的核心洞见是——组织最大的挑战并非招揽顶尖人才，而是让差异真正协作。包容不是姿态，而是决策质量的来源。"
+      ]
+    },
+    zhang: {
+      name:"Zhang Juanjuan", cn:"", school:"MIT", capColor:"gold", url:"https://mitsloan.mit.edu/faculty/directory/juanjuan-zhang",
+      pq:"当我们说“想要”，究竟是自己的渴望，还是被塑造的偏好？",
+      course:"A New Marketing Era",
+      qEN:"What do we really want?",
+      qCN:"我们真正想要的，究竟是什么？",
+      bio:[
+        "张娟娟（MIT Sloan）的研究聚焦消费者行为与市场营销的范式转移，追问企业创造价值的本质。",
+        "她指出，当代营销逻辑已从「产品→消费者」的单向链条，演进为「文化→关系→信任→产品」的循环。理解人，是理解商业的起点。"
+      ]
+    },
+    nicholas: {
+      name:"Nicholas Barberis", cn:"", school:"Yale", capColor:"gold", url:"https://som.yale.edu/faculty-research/faculty-directory/nicholas-c-barberis",
+      pq:"为什么聪明人也会做出错误决定？",
+      course:"Behavioral Finance",
+      qEN:"What stops us from deciding well?",
+      qCN:"阻碍我们做出好决策的，究竟是信息，还是人性？",
+      bio:[
+        "Nicholas Barberis 是行为金融领域的代表人物，系统梳理了偏见、情绪与错误判断如何影响市场。",
+        "他追问一个朴素却尖锐的问题：阻碍我们决策的，究竟是信息不足，还是人性本身？理解这些非理性，是决策者的必修课。"
+      ]
+    },
+    merton: {
+      name:"Robert C. Merton", cn:"", school:"Harvard", capColor:"slate", url:"https://mitsloan.mit.edu/faculty/directory/robert-c-merton",
+      pq:"如果未来无法预测，我们如何做决定？",
+      course:"Global Economy & Financial Innovation",
+      qEN:"How do we navigate uncertainty?",
+      qCN:"我们如何在不确定性中，稳健地前行？",
+      bio:[
+        "Robert C. Merton 是 1997 年诺贝尔经济学奖得主、哈佛大学教授，现代金融学与风险管理理论的奠基者之一。",
+        "他关于期权定价与金融创新的框架，至今仍在塑造全球市场。他的提问始终围绕：在未知之中，如何设计更稳健的系统。"
+      ]
+    },
+    song: {
+      name:"Song Ma", cn:"", school:"Yale", capColor:"slate", url:"https://som.yale.edu/faculty-research/faculty-directory/song-ma",
+      pq:"企业究竟有多大的自由去改变自己的未来？",
+      course:"The Resurgence of Industrial Policy",
+      qEN:"Who decides the future?",
+      qCN:"谁在替我们决定未来？",
+      bio:[
+        "Song Ma 关注私人资本与产业政策的崛起，以及它们如何塑造未来。",
+        "他指出，资本流向决定了哪些创新获得资源、哪些梦想悄然消失。理解资本与政策，就是理解「谁在替我们决定未来」。"
+      ]
+    },
+    songAI: {
+      name:"Song Ma", cn:"", school:"Yale", capColor:"slate", url:"https://som.yale.edu/faculty-research/faculty-directory/song-ma",
+      pq:"当组织由智能原生地构建，人的决策还剩下什么？",
+      course:"AI-Native Organizations",
+      qEN:"When organizations are built by AI from the ground up, what does decision-making become?",
+      qCN:"当组织由智能原生地构建，决策本身将被怎样重新定义？",
+      bio:[
+        "Song Ma 是 AI-Native Organizations 这一未来岔路的授课老师。她带领学习者追问：当组织从底层由智能构建，领导者与决策者的角色将如何被重新书写。",
+        "她指出，资本、政策与智能的三重汇流，正在决定哪些组织形态能够获得资源、走向现实。理解这场重构，就是理解「未来由谁、以何种方式被组织起来」。"
+      ]
+    }
+  };
+
+  // ---------- Campus tour intros ----------
+  const TOUR_INFO = {
+    harvard: {
+      school:"Harvard · 哈佛园大门",
+      name:"Li Li 博士（LILI）",
+      cap:"校园参观及文化历史主讲人",
+      tags:["上海交大杰出校友","哈佛大学博士后","哈佛医学院遗传学系及 Wyss Institute 讲师"],
+      body:[
+        "LILI 博士（Dr. Li Li）担任哈佛医学院遗传学系及哈佛大学威斯生物启发工程研究所（Wyss Institute）的讲师及研究员，并兼任香港大学商学院客座讲师。她还是 GLife 的创始人兼首席执行官。",
+        "她本科及硕士毕业于上海交通大学生物信息专业，在科隆大学和苏黎世联邦理工学院（ETH Zurich）接受了计算生物学专业训练。她的研究方向主要集中在机器学习、网络生物学、临床信息学以及二代测序（NGS）技术。Li Li 博士开展了疾病特异性网络分析研究，开发了用于预测蛋白质-化学物质相互作用的机器学习模型，并创建了用于单核苷酸多态性（SNP）预测的算法。在哈佛大学期间，她目前致力于针对皮肤衰老及皮肤疾病开发新型 mRNA 和基因疗法。",
+        "除科学研究外，Li Li 博士还担任《Health and Medical Informatics》期刊编辑、NeurIPS（神经信息处理系统大会）评审委员会成员，以及医疗机器学习大会（MLHC）委员会成员。她还担任《Nature Medicine》、《BMC Genetics》和 AMIA 等顶级期刊及学术组织的审稿人。Li Li 博士曾荣获多项权威奖誉，包括 MIT Solve 决赛大奖、哈佛 BD2K PIC-SURE API 挑战赛\"最佳解决方案奖\"，以及 MIT 数据马拉松（MIT Datathon）第一名。"
+      ],
+      link:{text:"参考：Humans of the Wyss — Li Li", url:"https://wyss.harvard.edu/news/humans-of-the-wyss-li-li-on-bringing-advanced-omics-technology-to-dermatology/"}
+    },
+    mit: {
+      school:"MIT · MIT 圆顶",
+      name:"MIT 圆顶",
+      cap:"第二站 · STOP 2",
+      tags:["MIT 标志性建筑","1916 年落成"],
+      body:[
+        "MIT 圆顶（Great Dome）矗立在 10 号楼（Main Building）顶端，是麻省理工学院最具辨识度的地标。它由建筑师 William Welles Bosworth 设计，1916 年随校园从波士顿迁至剑桥时落成，采用新古典主义风格，穹顶灵感源自罗马万神殿。",
+        "圆顶之下是 MIT 的行政与核心教学中枢，而它的顶部则是校园「黑客文化」（hack）的舞台——学生们曾把消防车、警车乃至一整艘潜艇模型搬上穹顶，用幽默的方式表达对工程与创造的热爱。它既是 MIT 理性的象征，也是其自由精神的注脚。",
+        "在 MIT 的毕业传统中，圆顶出现在每一枚「Brass Rat」班级戒指的背面，成为一代代校友共同的身份印记。"
+      ]
+    },
+    yale: {
+      school:"Yale · Harkness 塔",
+      name:"耶鲁 · Harkness 塔",
+      cap:"第三站 · STOP 3",
+      tags:["耶鲁最具辨识度地标","1921 年落成"],
+      body:[
+        "Harkness 塔（Harkness Tower）位于耶鲁纪念四方院（Memorial Quadrangle），高约 66 米（216 英尺），是耶鲁大学最著名的哥特式地标。它由建筑师 James Gamble Rogers 设计，1921 年落成，以资助人 Charles William Harkness 命名。",
+        "塔身布满精雕细琢的石像与纹章，整体采用学院哥特（Collegiate Gothic）风格，把中世纪的崇高感带入现代校园。塔内悬挂一套 54 口钟的钟琴（carillon），悠扬的钟声日复一日地标刻着耶鲁的时间与记忆。",
+        "作为耶鲁视觉身份的核心，Harkness 塔出现在校徽、宣传与无数校友的合影背景中——它不只是建筑，更是耶鲁精神与传承的具象化身。"
+      ]
+    }
+  };
+
+  const COLORVAR = {navy:"--navy",crimson:"--crimson",green:"--green",gold:"--gold",slate:"--slate"};
+
+  // ---------- Tiers (top -> bottom) ----------
+  const TIERS = [
+    {type:"you"},
+    {type:"group", cap:"INFLUENCE · AGENCY", capCn:"影响他人 · 影响未来", color:"navy",
+      nodes:["zoe","gautam"]},
+    {type:"group", cap:"CHOOSE", capCn:"选择", color:"green",
+      nodes:["jidong","frank"]},
+    {type:"group", cap:"DISCOVER", capCn:"发现机会", color:"crimson",
+      nodes:["daylian","barry"]},
+    {type:"group", cap:"UNDERSTAND", capCn:"理解人", color:"gold",
+      nodes:["david","zhang","nicholas"]},
+    {type:"group", cap:"SEE WORLD", capCn:"看见世界", color:"slate",
+      nodes:["merton","song"]},
+    {type:"fork", cap:"FUTURE FORK", capCn:"AI-NATIVE ORGANIZATIONS · 原生智能组织", color:"slate", node:"songAI",
+      desc:"这是一条面向未来的岔路：当组织由智能原生地构建，决策本身将被重新定义。它从这张地图的能力脉络中分叉而出，指向尚未被书写的领导者范式。"},
+    {type:"leader", cap:"THE LEADER", capCn:"我如何影响未来？", color:"navy"}
+  ];
+
+  // ---------- Render ----------
+  const map = document.getElementById("map");
+
+  function nodeCard(key){
+    const p = PROFESSORS[key];
+    const col = `var(${COLORVAR[p.capColor]})`;
+    const nameHtml = p.cn ? `${p.name} <span class="name-cn">${p.cn}</span>` : p.name;
+    return `
+      <div class="node">
+        <div class="accent" style="background:${col}"></div>
+        <div class="inner">
+          <span class="school">${p.school}</span>
+          <a class="name" style="color:${col}" href="${p.url}" target="_blank" rel="noopener">${nameHtml}</a>
+          <div class="pq"><span class="pq-mark">Q</span><span>${p.pq}</span></div>
+          <div class="actions">
+            <button class="bio-btn" data-key="${key}" data-mode="bio">为什么是他 / 她 →</button>
+            <button class="course" data-key="${key}" data-mode="question">${p.course}</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  TIERS.forEach(t=>{
+    const tier = document.createElement("section");
+    tier.className = "tier" + (t.type==="fork" ? " fork" : "");
+
+    if(t.type==="leader"){
+      tier.innerHTML = `
+        <div class="cap-label" style="background:var(--navy)">${t.cap}</div>
+        <div class="cap-cn">${t.capCn}</div>
+        <div class="leader-node">
+          <h2 class="serif-en">The Leader</h2>
+          <p>这是旅程的终点，也是影响未来的真正起点——把一路习得的能力，化作你自己的决策力。</p>
+        </div>`;
+    }
+    else if(t.type==="you"){
+      tier.innerHTML = `
+        <div class="you-node">
+          <div class="star">★</div>
+          <h2 class="serif-en">YOU</h2>
+          <div class="cn">你的起点</div>
+          <p>一切从这里开始。你是这张地图的起点，沿着脉络向下，去遇见那些塑造未来的思想者。</p>
+        </div>
+        <div class="tour-branch">
+          <div class="tour-head">Campus Walk · 校园导览</div>
+          <svg class="tour-path" viewBox="0 0 600 38" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M90 19 H 510" stroke="#98A2AD" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6 6"/>
+            <circle cx="90" cy="19" r="3" fill="#98A2AD"/>
+            <circle cx="300" cy="19" r="3" fill="#98A2AD"/>
+            <circle cx="510" cy="19" r="3" fill="#98A2AD"/>
+          </svg>
+          <div class="tour-row">
+            <div class="tour-card" data-tour="harvard">
+              <div class="shot"><img src="harvard-gate-sketch.jpg" alt="哈佛园大门手绘"></div>
+              <div class="tour-step">第一站 · STOP 1</div>
+              <div class="tour-cap">哈佛园大门</div>
+              <div class="tour-hint">点击查看介绍</div>
+            </div>
+            <div class="tour-card" data-tour="mit">
+              <div class="shot"><img src="mit-dome.jpg" alt="MIT 圆顶手绘"></div>
+              <div class="tour-step">第二站 · STOP 2</div>
+              <div class="tour-cap">MIT 圆顶</div>
+              <div class="tour-hint">点击查看介绍</div>
+            </div>
+            <div class="tour-card" data-tour="yale">
+              <div class="shot"><img src="yale-harkness.jpg" alt="耶鲁 Harkness 塔手绘"></div>
+              <div class="tour-step">第三站 · STOP 3</div>
+              <div class="tour-cap">耶鲁 · Harkness 塔</div>
+              <div class="tour-hint">点击查看介绍</div>
+            </div>
+          </div>
+        </div>`;
+    }
+    else if(t.type==="fork"){
+      tier.innerHTML = `
+        <div class="cap-label" style="background:var(${COLORVAR[t.color]})">${t.cap}</div>
+        <div class="cap-cn dim">${t.capCn}</div>
+        <div class="fork-node">
+          <div class="fork-glyph">⑂</div>
+          <p>${t.desc}</p>
+        </div>
+        <div class="nodes" style="max-width:600px;margin:18px auto 0;">
+          ${nodeCard(t.node)}
+        </div>`;
+    }
+    else {
+      const n = t.nodes.length;
+      const cols = n===3 ? "cols-3" : "cols-2";
+      tier.innerHTML = `
+        <div class="cap-label" style="background:var(${COLORVAR[t.color]})">${t.cap}</div>
+        <div class="cap-cn dim">${t.capCn}</div>
+        <div class="nodes ${cols}">
+          ${t.nodes.map(nodeCard).join("")}
+        </div>`;
+    }
+    map.appendChild(tier);
+  });
+
+  // ---------- Modal ----------
+  const overlay = document.getElementById("overlay");
+  const modalBody = document.getElementById("modalBody");
+  const closeBtn = document.getElementById("closeBtn");
+
+  function openModal(key, mode){
+    const p = PROFESSORS[key];
+    const col = `var(${COLORVAR[p.capColor]})`;
+    if(mode==="bio"){
+      modalBody.innerHTML = `
+        <div class="m-school">${p.school}</div>
+        <h3>${p.name}${p.cn?` <span style="font-size:20px;font-weight:500;">${p.cn}</span>`:""}</h3>
+        <div class="m-course">${p.course}</div>
+        <div class="divider"></div>
+        <div class="bio-title"><span class="en">Why Him / Her</span>为什么是他 / 她？</div>
+        ${p.bio.map(b=>`<p class="bio">${b}</p>`).join("")}`;
+    } else {
+      modalBody.innerHTML = `
+        <div class="m-school">${p.school} · ${p.name}${p.cn?` ${p.cn}`:""}</div>
+        <h3 style="color:${col}">${p.course}</h3>
+        <div class="divider"></div>
+        <div class="bio-title"><span class="en">The Question</span>这门课要回答的问题</div>
+        <div class="q-en">${p.qEN}</div>
+        <div class="q-cn">${p.qCN}</div>`;
+    }
+    overlay.classList.add("show");
+  }
+  function closeModal(){ overlay.classList.remove("show"); }
+
+  function openTourModal(key){
+    const info = TOUR_INFO[key];
+    modalBody.innerHTML = `
+      <div class="m-school">${info.school}</div>
+      <h3>${info.name}</h3>
+      <div class="m-course">${info.cap}</div>
+      <div class="divider"></div>
+      ${info.tags.length?`<div class="tour-tags">${info.tags.map(t=>`<span class="tour-tag">${t}</span>`).join("")}</div>`:""}
+      <div class="bio-title"><span class="en">About</span>介绍</div>
+      ${info.body.map(b=>`<p class="bio">${b}</p>`).join("")}
+      ${info.link?`<a class="tour-link" href="${info.link.url}" target="_blank" rel="noopener">${info.link.text} ↗</a>`:""}`;
+    overlay.classList.add("show");
+  }
+
+  document.addEventListener("click", e=>{
+    const tour = e.target.closest("[data-tour]");
+    if(tour){ openTourModal(tour.dataset.tour); return; }
+    const btn = e.target.closest("[data-key]");
+    if(btn){ openModal(btn.dataset.key, btn.dataset.mode); }
+  });
+  closeBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+</script>
+</body>
+</html>
