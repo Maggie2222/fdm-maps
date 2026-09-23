@@ -64,29 +64,20 @@
 
   .planet{
     position:absolute;transform:translate(-50%,-50%);
-    text-align:center;cursor:pointer;width:240px;
+    text-align:center;cursor:pointer;width:270px;
     transition:transform .25s ease;
   }
   .planet:hover{transform:translate(-50%,-50%) scale(1.04);}
   .planet-img{
-    width:190px;height:190px;border-radius:50%;
+    width:250px;height:250px;border-radius:12px;
     overflow:hidden;margin:0 auto;
-    border:2px solid var(--ink);
-    box-shadow:0 10px 26px rgba(36,51,80,.18), 0 0 0 6px rgba(185,138,47,.12);
     background:var(--card);
-    transition:box-shadow .25s ease;
+    box-shadow:0 12px 28px rgba(36,51,80,.20);
+    transition:box-shadow .25s ease, transform .25s ease;
   }
-  .planet:hover .planet-img{box-shadow:0 16px 34px rgba(36,51,80,.26), 0 0 0 6px rgba(185,138,47,.2);}
+  .planet:hover .planet-img{box-shadow:0 18px 38px rgba(36,51,80,.28);}
   .planet-img img{width:100%;height:100%;object-fit:cover;display:block;}
-  .planet-no{
-    position:absolute;top:174px;left:50%;transform:translateX(-50%);
-    width:30px;height:30px;border-radius:50%;
-    background:var(--ink);color:var(--card);
-    font-family:"Playfair Display",serif;font-size:13px;
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 3px 8px rgba(36,51,80,.3);
-  }
-  .planet-name{margin-top:14px;font-size:19px;font-weight:600;letter-spacing:2px;}
+  .planet-name{margin-top:16px;font-size:19px;font-weight:600;letter-spacing:2px;}
   .planet-sub{
     margin-top:5px;font-size:12.5px;color:var(--gold);letter-spacing:1.5px;
   }
@@ -245,7 +236,6 @@
     </div>
 
     <div class="planet" style="left:190px;top:170px" data-planet="eiffel" data-page-node-id="B878WCf3GDpoWtasndyAcf">
-      <div class="planet-no" data-page-node-id="RZOrc8tJS27Wl5bVVPj8EH">1</div>
       <div class="planet-img" data-page-node-id="HdNcrnak7UFDot4DVG1Ejl"><img src="eiffel-planet.jpg" alt="埃菲尔铁塔星球" data-page-node-id="4D7jxKSYE9ID3zBtf9qNda"></div>
       <div class="planet-name" data-page-node-id="TuhT348O9CRO1FapD43Hp6">埃菲尔铁塔</div>
       <div class="planet-sub" data-page-node-id="CAghOOYS1lHkycIHfRXv3S">点灯人的星球</div>
@@ -253,7 +243,6 @@
     </div>
 
     <div class="planet" style="left:665px;top:400px" data-planet="triomphe" data-page-node-id="vqkMqUzYaz1oQKbyC9GWdR">
-      <div class="planet-no" data-page-node-id="NXAFFvHK9E0qfw3OoKRXje">2</div>
       <div class="planet-img" data-page-node-id="f8mWCUoUaQqK4QwDe7vdpF"><img src="triomphe-planet.jpg" alt="凯旋门星球" data-page-node-id="jnS9WSu7ev3V0FgUE4IMlC"></div>
       <div class="planet-name" data-page-node-id="m4WhyxOPA5xsuC1RridX9H">凯旋门</div>
       <div class="planet-sub" data-page-node-id="Lqno2nIGl2sbyRmfF7sMWE">虚荣的人的星球</div>
@@ -261,7 +250,6 @@
     </div>
 
     <div class="planet" style="left:200px;top:650px" data-planet="louvre" data-page-node-id="SPv1ZhhtJ1UcmWEwfpmvd0">
-      <div class="planet-no" data-page-node-id="G4uFrkKQ0zWxb3kUrRqkvC">3</div>
       <div class="planet-img" data-page-node-id="QqokCDDcD8es6v2lvTDNT8"><img src="louvre-planet.jpg" alt="卢浮宫星球" data-page-node-id="Xuwm43IVpdjwKngO5zyRkm"></div>
       <div class="planet-name" data-page-node-id="YZZEdt1cH1GeCr9XkdM2tt">卢浮宫</div>
       <div class="planet-sub" data-page-node-id="5hMvfFcw1ITEbeH6ZQErLf">商人的星球</div>
@@ -269,7 +257,6 @@
     </div>
 
     <div class="planet" style="left:655px;top:890px" data-planet="notredame" data-page-node-id="kQ6z9viR1DL91Vp64fOsvr">
-      <div class="planet-no" data-page-node-id="osgiWxdLG7FtEejidSdDiM">4</div>
       <div class="planet-img" data-page-node-id="4DrCBWF0nFgJCjGFpCODyp"><img src="notre-dame-planet.jpg" alt="巴黎圣母院星球" data-page-node-id="MTd3hmPP0NWUOhG03laVT7"></div>
       <div class="planet-name" data-page-node-id="Qd21MC3DcUFLMZ7xtVamSR">巴黎圣母院</div>
       <div class="planet-sub" data-page-node-id="KwFFvvx9oocXsq9NQt6I0X">国王的星球</div>
@@ -277,7 +264,6 @@
     </div>
 
     <div class="planet" style="left:185px;top:1105px" data-planet="sacrecoeur" data-page-node-id="7RCTKyS9C6ld2mrGAXCPl6">
-      <div class="planet-no" data-page-node-id="A0XUtgVddD255DtW4q8vGM">5</div>
       <div class="planet-img" data-page-node-id="dPRD3YLqIAXAFohv4Xxl4v"><img src="sacre-coeur-planet.jpg" alt="圣心堂星球" data-page-node-id="ewe0XcvC668mejjBCKMZQ2"></div>
       <div class="planet-name" data-page-node-id="9ioyCExEjAcgnRde4JodHJ">圣心堂 · 蒙马特</div>
       <div class="planet-sub" data-page-node-id="DuN9ZqebkepAuUHtMO6Ra7">地理学家的星球</div>
@@ -375,7 +361,7 @@ function feetPos(el){
   const mr = map.getBoundingClientRect();
   return {
     x: br.left + br.width/2 - mr.left,                // 球心 x
-    y: br.top - mr.top + 16                           // 球顶边缘（小王子脚下）
+    y: br.top - mr.top + 8                            // 图顶边缘（小王子脚下）
   };
 }
 
