@@ -28,41 +28,7 @@
   .page{max-width:920px;margin:0 auto;padding:56px 24px 80px;}
   html{scroll-behavior:smooth;}
 
-  /* ---------- cover / book (page-turn) ---------- */
-  .book-overlay{
-    position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
-    background:var(--paper);perspective:1700px;
-  }
-  .book-leaf{
-    transform-origin:left center;
-    transition:transform 1.1s cubic-bezier(.62,.04,.32,1);
-    backface-visibility:hidden;will-change:transform;
-  }
-  .book-leaf.flipped{transform:rotateY(-178deg);}
-  .book{
-    position:relative;width:360px;max-width:88vw;min-height:560px;
-    background:linear-gradient(135deg,#FBF6EA,#EFE3CC);
-    border-radius:4px 12px 12px 4px;
-    box-shadow:0 30px 70px rgba(36,51,80,.28),0 4px 12px rgba(36,51,80,.16);
-    border:1px solid rgba(185,138,47,.4);
-    padding:48px 34px 42px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;
-  }
-  .book::before{ /* 书脊 */
-    content:"";position:absolute;left:0;top:0;bottom:0;width:13px;
-    background:linear-gradient(90deg,rgba(36,51,80,.25),rgba(36,51,80,0));
-    border-radius:4px 0 0 4px;
-  }
-  .b-title{font-family:"Playfair Display",serif;font-weight:600;font-size:36px;line-height:1.18;letter-spacing:1px;color:var(--ink);}
-  .b-art{margin:22px 0 18px;width:100%;}
-  .b-art img{width:100%;height:220px;object-fit:cover;border-radius:6px;border:1px solid rgba(185,138,47,.4);display:block;box-shadow:0 8px 18px rgba(36,51,80,.16);}
-  .b-sub{margin-top:2px;font-family:"Noto Serif SC",serif;font-size:13.5px;line-height:1.95;color:var(--ink-soft);letter-spacing:.4px;}
-  .chapter-cta{
-    margin-top:30px;display:inline-flex;align-items:center;gap:10px;
-    background:none;border:none;cursor:pointer;font-family:inherit;color:var(--ink);padding:6px 12px;
-  }
-  .chapter-cta .c-name{font-family:"Noto Serif SC",serif;font-size:14px;letter-spacing:3px;color:var(--ink);}
-  .chapter-cta .c-arrow{font-size:22px;color:var(--rose);display:inline-block;animation:nudge 1.6s ease-in-out infinite;}
+  /* 翻书封面已移除（内容迁至总入口封面页）；nudge 动画保留给 next-cta 箭头 */
   @keyframes nudge{0%,100%{transform:translateX(0);}50%{transform:translateX(7px);}}
 
   /* ---------- chapter heading ---------- */
@@ -306,20 +272,6 @@
 </head>
 <body>
 <div class="page">
-
-  <div class="book-overlay" id="bookOverlay">
-    <div class="book-leaf" id="bookLeaf">
-      <div class="book">
-        <div class="b-title">ONCE UPON<br>A BUSINESS</div>
-        <div class="b-art"><img src="hero.jpg" alt="小王子、狐狸与玫瑰"></div>
-        <div class="b-sub">From Paris to Munich,<br>from imagination to creation.</div>
-        <button class="chapter-cta" id="openChapter" aria-label="进入第一章">
-          <span class="c-arrow">&#8594;</span>
-          <span class="c-name">Chapter 1</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <div class="chapter-head" id="chapter-01">
     <div class="ch-no">Chapter 01</div>
@@ -662,23 +614,6 @@ document.addEventListener('keydown', e => {
     else closeStation();
   }
 });
-
-/* ---------- 封面翻书：点击 THE CITY OF DREAMERS 翻开书封跳到第一章 ---------- */
-const bookLeaf = document.getElementById('bookLeaf');
-const bookOverlay = document.getElementById('bookOverlay');
-const openChapterBtn = document.getElementById('openChapter');
-let coverFlipped = false;
-function openChapter(){
-  if(coverFlipped) return;
-  coverFlipped = true;
-  bookLeaf.classList.add('flipped');
-  setTimeout(() => {
-    bookOverlay.style.display = 'none';
-    const ch = document.getElementById('chapter-01');
-    if(ch) ch.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 950);
-}
-if(openChapterBtn) openChapterBtn.addEventListener('click', openChapter);
 
 /* ---------- 前往 Chapter 2 · 慕尼黑机械之旅 ---------- */
 const toChapter2 = document.getElementById('toChapter2');

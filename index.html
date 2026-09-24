@@ -38,7 +38,10 @@ body{
 .intro{max-width:680px;margin:18px auto 0;font-size:clamp(15px,2.2vw,18px);line-height:1.95;color:#e9ddc7;opacity:.92}
 .intro b{color:var(--gold);font-weight:600}
 .intro i{color:var(--brass);font-style:normal}
-.gates{display:flex;gap:28px;margin-top:54px;flex-wrap:wrap}
+.once{text-align:center;margin-top:52px}
+.once-title{font-family:"Playfair Display",serif;font-weight:500;font-size:clamp(26px,4.6vw,40px);letter-spacing:.03em;color:#F7EFE0;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+.once-sub{margin-top:12px;font-family:"Playfair Display",serif;font-style:italic;font-size:clamp(14px,2.2vw,18px);color:var(--brass);opacity:.92;letter-spacing:.02em;line-height:1.9}
+.gates{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap}
 .gate{
   position:relative;flex:1 1 320px;min-height:344px;border-radius:18px;overflow:hidden;
   text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;
@@ -79,6 +82,11 @@ body{
     <img class="prince" src="prince.png" alt="小王子">
     <p class="intro">在玫瑰色的黎明与黄铜色的暮色之间，小王子造访了两颗星球。<b>巴黎</b>，是梦想家栖居的城市；<i>慕尼黑</i>，是机械与系统运转的行星。点亮罗盘，踏上他的航线。</p>
   </header>
+
+  <section class="once">
+    <h2 class="once-title">Once Upon a Business</h2>
+    <p class="once-sub">From Paris to Munich,<br>from imagination to creation.</p>
+  </section>
 
   <section class="gates">
     <a class="gate paris" href="paris/">
