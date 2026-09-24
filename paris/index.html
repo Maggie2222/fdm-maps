@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="csO2RBGPdsOJPnK6ebICbS">
-<head data-page-node-id="xLJ5ZAPGS8OmDep2K5pONe">
-<meta charset="UTF-8" data-page-node-id="4ZGqkpRQr9Dx5Cf9HONT4R">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="OtZjRNmjt6nISsHxGFllEA">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小王子 · 巴黎星球之旅</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="1pcQ8DoMVSTpDHQevWNuCD">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="j8soz9HQUEx3BkFaJT8ZLj">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" data-page-node-id="4N5CbnD5JN9jnzKCf3Zo7h">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F6EFE2;
@@ -103,40 +103,81 @@
     font-size:14.5px;color:var(--faint);letter-spacing:1px;line-height:1.9;max-width:520px;margin:0 auto;
   }
 
-  /* ---------- starfield ---------- */
-  .stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;height:100%;}
-  .stars svg{position:absolute;opacity:.5;}
-
-  /* ---------- map ---------- */
+  /* ---------- poster map ---------- */
   .map{
-    position:relative;width:860px;height:1220px;margin:0 auto;
+    position:relative;width:min(920px,100%);margin:34px auto 0;
+    cursor:zoom-in;
   }
-  .route{position:absolute;inset:0;pointer-events:none;}
-  .route svg{width:100%;height:100%;}
-
-  .planet{
+  .map-base{
+    display:block;width:100%;height:auto;border-radius:8px;
+    border:1px solid var(--line);
+    box-shadow:0 0 0 6px rgba(185,138,47,.08), 0 22px 52px rgba(36,51,80,.2);
+  }
+  .station{
     position:absolute;transform:translate(-50%,-50%);
-    text-align:center;cursor:pointer;width:270px;
-    transition:transform .25s ease;
+    cursor:pointer;z-index:7;
   }
-  .planet:hover{transform:translate(-50%,-50%) scale(1.04);}
-  .planet-img{
-    margin:0 auto;width:fit-content;
+  .node{
+    width:56px;height:56px;border-radius:50%;
+    border:3px solid var(--gold);
+    background:rgba(251,246,234,.92);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Playfair Display",serif;font-size:19px;font-weight:600;color:var(--ink);
+    box-shadow:0 0 0 6px rgba(185,138,47,.18), 0 12px 26px rgba(36,51,80,.28);
+    position:relative;
+    transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
   }
-  .planet-img img{
-    height:250px;width:auto;display:block;
-    filter:drop-shadow(0 12px 20px rgba(36,51,80,.25));
-    transition:filter .25s ease;
+  .node::after{ /* 旋转的齿轮齿圈 */
+    content:"";position:absolute;inset:-11px;border-radius:50%;
+    border:2px dashed rgba(185,138,47,.6);
+    animation:spin 42s linear infinite;
   }
-  .planet:hover .planet-img img{filter:drop-shadow(0 18px 30px rgba(36,51,80,.32));}
-  .planet-name{margin-top:16px;font-size:19px;font-weight:600;letter-spacing:2px;}
-  .planet-sub{
-    margin-top:5px;font-size:12.5px;color:var(--gold);letter-spacing:1.5px;
+  .station:hover .node{
+    transform:scale(1.12);
+    background:#FDF8EE;
+    box-shadow:0 0 0 9px rgba(185,138,47,.25), 0 16px 34px rgba(36,51,80,.32);
   }
-  .planet-sub::before{content:"— ";color:var(--line);}
-  .planet-sub::after{content:" —";color:var(--line);}
-  .planet-hint{margin-top:8px;font-size:11.5px;color:var(--faint);letter-spacing:1px;}
-  .planet-hint::before{content:"🔍 ";font-size:11px;}
+  .tip{
+    position:absolute;left:50%;top:calc(100% + 14px);transform:translateX(-50%);
+    white-space:nowrap;font-size:12.5px;letter-spacing:1.5px;color:var(--ink);
+    background:rgba(251,246,234,.95);border:1px solid var(--gold);border-radius:999px;
+    padding:5px 14px;opacity:0;transition:opacity .25s ease;pointer-events:none;z-index:8;
+    box-shadow:0 8px 18px rgba(36,51,80,.18);
+  }
+  .station:hover .tip{opacity:1;}
+  .hub{position:absolute;width:10px;height:10px;transform:translate(-50%,-50%);pointer-events:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .map-hint{
+    text-align:center;margin-top:14px;font-size:12.5px;color:var(--faint);letter-spacing:1px;
+  }
+
+  /* ---------- map detail viewer ---------- */
+  .viewer{
+    position:fixed;inset:0;background:rgba(36,51,80,.9);
+    display:none;align-items:center;justify-content:center;
+    z-index:120;overflow:hidden;
+  }
+  .viewer.open{display:flex;}
+  .viewer img{
+    max-width:none;transform-origin:0 0;
+    cursor:grab;user-select:none;-webkit-user-drag:none;touch-action:none;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  .viewer img:active{cursor:grabbing;}
+  .v-bar{position:absolute;top:18px;right:20px;display:flex;gap:8px;z-index:2;}
+  .v-bar button{
+    width:38px;height:38px;border-radius:50%;
+    border:1px solid rgba(251,246,234,.5);background:rgba(36,51,80,.6);
+    color:#F6EFE2;font-size:17px;cursor:pointer;
+    font-family:"Playfair Display",serif;transition:background .2s,border-color .2s;
+  }
+  .v-bar button:hover{background:var(--gold);border-color:var(--gold);}
+  .v-hint{
+    position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+    font-size:12px;letter-spacing:1.5px;color:rgba(246,239,226,.78);
+    background:rgba(36,51,80,.55);border:1px solid rgba(251,246,234,.25);
+    border-radius:999px;padding:6px 16px;pointer-events:none;white-space:nowrap;
+  }
 
   /* ---------- modal ---------- */
   .overlay{
@@ -228,7 +269,7 @@
 
   /* ---------- traveler (Little Prince) ---------- */
   .traveler{
-    position:absolute;width:96px;height:auto;transform:translate(-50%,-100%);
+    position:absolute;width:84px;height:auto;transform:translate(-50%,-100%);
     z-index:6;pointer-events:none;
     filter:drop-shadow(0 6px 10px rgba(36,51,80,.28));
     transition:left 1.1s cubic-bezier(.45,.05,.35,1), top 1.1s cubic-bezier(.45,.05,.35,1);
@@ -251,18 +292,20 @@
   }
 
   /* ---------- responsive ---------- */
-  @media (max-width:919px){
-    .map{width:auto;height:auto;display:flex;flex-direction:column;align-items:center;gap:40px;padding:0 4px;}
-    .route{display:none;}
-    .planet{position:static;transform:none;}
-    .planet:hover{transform:scale(1.04);}
+  @media (max-width:640px){
+    .node{width:42px;height:42px;font-size:16px;border-width:2px;}
+    .node::after{inset:-9px;border-width:1.5px;}
+    .traveler{width:58px;}
+    .tip{font-size:11px;padding:4px 10px;}
     .masthead h1{font-size:30px;letter-spacing:4px;}
     .modal{padding:34px 26px 30px;}
+    .map-hint{font-size:11px;}
+    .v-hint{display:none;}
   }
 </style>
 </head>
-<body data-page-node-id="BTuu8qYyvQ6LNTccGsoGSe">
-<div class="page" data-page-node-id="EbZBMAepCTuPAx0Vgg9mT6">
+<body>
+<div class="page">
 
   <div class="book-overlay" id="bookOverlay">
     <div class="book-leaf" id="bookLeaf">
@@ -284,92 +327,69 @@
     <div class="ch-rule"></div>
   </div>
 
-  <header class="masthead" data-page-node-id="tQNWHNu406fzCYpXu1MrOz">
-    <div class="eyebrow" data-page-node-id="BKYEDHFWQAAQ26L07rFz5H">Le Petit Prince · Voyage à Paris</div>
-    <h1 data-page-node-id="saR5awzrEGOsFGlan2IrNW">小王子 · <span class="en" data-page-node-id="3ARxO2EFS4R5B0rTjuVLek">Paris</span> 星球之旅</h1>
-    <div class="rule" data-page-node-id="QIcMe7DPWp3cAuvshIroa1"></div>
-    <p class="sub" data-page-node-id="PhXCMKLphhjVjQQcDrVgD2">跟随小王子的航线，在五颗星球之间依次降落。<br data-page-node-id="OUhCcL9HgLjoIg8OdE0CUU">每一颗星球上，都住着一座巴黎地标。</p>
+  <header class="masthead">
+    <div class="eyebrow">Le Petit Prince · Voyage à Paris</div>
+    <h1>小王子 · <span class="en">Paris</span> 星球之旅</h1>
+    <div class="rule"></div>
+    <p class="sub">有些星球住着梦想家，有些住着思想者。<br>小王子降落在巴黎上空，在六颗星球之间，收集看世界的不同方式。</p>
   </header>
 
   <div class="info">
     <div class="i-place">PARIS · FRANCE</div>
     <div class="i-q">What makes us imagine?</div>
     <div class="i-tags">
-      <span class="i-tag">Art</span>
-      <span class="i-tag">Culture</span>
+      <span class="i-tag">Art &amp; Culture</span>
       <span class="i-tag">Creativity</span>
       <span class="i-tag">People</span>
       <span class="i-tag">Meaning</span>
+      <span class="i-tag">Inspiration</span>
     </div>
   </div>
 
-  <div class="map" data-page-node-id="xthK8f39mIlhFsPGEwXCum">
+  <div class="map" id="map">
+    <img class="map-base" src="paris-map.jpg" alt="巴黎梦想家手绘地图：六座星球岛与塞纳河">
+
     <div class="footsteps" id="footsteps"></div>
     <div class="traveler" id="traveler"><img src="prince.png" alt="正在旅行的小王子"></div>
+    <div class="hub" id="hub" style="left:47%;top:72%"></div>
 
-    <div class="route" data-page-node-id="Jq8fhIkAF5wpmXADb42zmT">
-      <svg viewBox="0 0 860 1220" fill="none" xmlns="http://www.w3.org/2000/svg" data-page-node-id="CKjvFtVnbyC0ckHjRj2oBc">
-        <path d="M205,170 Q430,250 655,400 Q415,505 215,650 Q445,765 645,890 Q420,1000 200,1105"
-              stroke="#243350" stroke-width="1.6" stroke-dasharray="7 8" stroke-linecap="round" opacity=".65" data-page-node-id="jeyUxv9F7rkrjRcPFBx49p"/>
-        <!-- 出发的小飞机 -->
-        <g transform="translate(205,170)" data-page-node-id="apCtTSZEr0wrqrGovW6PZK">
-          <path d="M0,-14 L4,-4 L14,0 L4,4 L0,14 L-4,4 L-14,0 L-4,-4 Z" fill="#C0533E" opacity=".85" data-page-node-id="TP6mZltj6jfs8wMADOLf1L"/>
-        </g>
-        <!-- 终点的玫瑰 -->
-        <g transform="translate(200,1105)" data-page-node-id="SGpuWyyD8TAmtkgM6EfXNf">
-          <circle r="4" fill="none" stroke="#C0533E" stroke-width="1.4" data-page-node-id="sLQocGRRFMavtAE0mc8XfM"/>
-          <path d="M0,4 L0,14 M0,8 C4,7 6,9 6,11" stroke="#243350" stroke-width="1.2" fill="none" data-page-node-id="YmONUG4GD2ODRgo6w2DUf6"/>
-        </g>
-        <!-- 路径旁散落的小星 -->
-        <g fill="#B98A2F" opacity=".55" data-page-node-id="EqtPGIl5s0Hpa7VwYf9FFc">
-          <circle cx="470" cy="205" r="2.2" data-page-node-id="5Ua5xQ9EZbFxWk5uOwIctE"/>
-          <circle cx="390" cy="470" r="1.8" data-page-node-id="SCEIJVTOsCdA6m9450uUia"/>
-          <circle cx="450" cy="720" r="2.2" data-page-node-id="sNt6jDxe0WRGYcfXBx5yBW"/>
-          <circle cx="380" cy="990" r="1.8" data-page-node-id="0gHs7EW0CJE6C56MYtamCF"/>
-        </g>
-      </svg>
+    <div class="station" style="left:35.4%;top:17.6%" data-station="montmartre">
+      <div class="node">01</div>
+      <div class="tip">Montmartre · 梦想家的星球</div>
     </div>
 
-    <div class="planet" style="left:190px;top:170px" data-planet="eiffel" data-page-node-id="B878WCf3GDpoWtasndyAcf">
-      <div class="planet-img" data-page-node-id="HdNcrnak7UFDot4DVG1Ejl"><img src="eiffel-planet.png" alt="埃菲尔铁塔星球" data-page-node-id="4D7jxKSYE9ID3zBtf9qNda"></div>
-      <div class="planet-name" data-page-node-id="TuhT348O9CRO1FapD43Hp6">埃菲尔铁塔</div>
-      <div class="planet-sub" data-page-node-id="CAghOOYS1lHkycIHfRXv3S">点灯人的星球</div>
-      <div class="planet-hint" data-page-node-id="cCNb2dBjySR4MML0WAWk6O">点击查看介绍</div>
+    <div class="station" style="left:58.5%;top:34.3%" data-station="orsay">
+      <div class="node">02</div>
+      <div class="tip">Musée d'Orsay · 观察者的星球</div>
     </div>
 
-    <div class="planet" style="left:665px;top:400px" data-planet="triomphe" data-page-node-id="vqkMqUzYaz1oQKbyC9GWdR">
-      <div class="planet-img" data-page-node-id="f8mWCUoUaQqK4QwDe7vdpF"><img src="triomphe-planet.png" alt="凯旋门星球" data-page-node-id="jnS9WSu7ev3V0FgUE4IMlC"></div>
-      <div class="planet-name" data-page-node-id="m4WhyxOPA5xsuC1RridX9H">凯旋门</div>
-      <div class="planet-sub" data-page-node-id="Lqno2nIGl2sbyRmfF7sMWE">虚荣的人的星球</div>
-      <div class="planet-hint" data-page-node-id="fDqhCNyaCYeUovAtSAIQNP">点击查看介绍</div>
+    <div class="station" style="left:78%;top:49.6%" data-station="marais">
+      <div class="node">03</div>
+      <div class="tip">Le Marais · 探索者的星球</div>
     </div>
 
-    <div class="planet" style="left:200px;top:650px" data-planet="louvre" data-page-node-id="SPv1ZhhtJ1UcmWEwfpmvd0">
-      <div class="planet-img" data-page-node-id="QqokCDDcD8es6v2lvTDNT8"><img src="louvre-planet.png" alt="卢浮宫星球" data-page-node-id="Xuwm43IVpdjwKngO5zyRkm"></div>
-      <div class="planet-name" data-page-node-id="YZZEdt1cH1GeCr9XkdM2tt">卢浮宫</div>
-      <div class="planet-sub" data-page-node-id="5hMvfFcw1ITEbeH6ZQErLf">商人的星球</div>
-      <div class="planet-hint" data-page-node-id="EzCXWWHuidAWrCLGZydu82">点击查看介绍</div>
+    <div class="station" style="left:53.2%;top:63.9%" data-station="louvre">
+      <div class="node">04</div>
+      <div class="tip">Louvre · 追寻者的星球</div>
     </div>
 
-    <div class="planet" style="left:655px;top:890px" data-planet="notredame" data-page-node-id="kQ6z9viR1DL91Vp64fOsvr">
-      <div class="planet-img" data-page-node-id="4DrCBWF0nFgJCjGFpCODyp"><img src="notre-dame-planet.png" alt="巴黎圣母院星球" data-page-node-id="MTd3hmPP0NWUOhG03laVT7"></div>
-      <div class="planet-name" data-page-node-id="Qd21MC3DcUFLMZ7xtVamSR">巴黎圣母院</div>
-      <div class="planet-sub" data-page-node-id="KwFFvvx9oocXsq9NQt6I0X">国王的星球</div>
-      <div class="planet-hint" data-page-node-id="kHMZfH8Fcj3yul5C2bd3Pg">点击查看介绍</div>
+    <div class="station" style="left:26.9%;top:63.2%" data-station="latin">
+      <div class="node">05</div>
+      <div class="tip">Latin Quarter · 思想者的星球</div>
     </div>
 
-    <div class="planet" style="left:185px;top:1105px" data-planet="sacrecoeur" data-page-node-id="7RCTKyS9C6ld2mrGAXCPl6">
-      <div class="planet-img" data-page-node-id="dPRD3YLqIAXAFohv4Xxl4v"><img src="sacre-coeur-planet.png" alt="圣心堂星球" data-page-node-id="ewe0XcvC668mejjBCKMZQ2"></div>
-      <div class="planet-name" data-page-node-id="9ioyCExEjAcgnRde4JodHJ">圣心堂 · 蒙马特</div>
-      <div class="planet-sub" data-page-node-id="DuN9ZqebkepAuUHtMO6Ra7">地理学家的星球</div>
-      <div class="planet-hint" data-page-node-id="jqiikoX0N4a5wbRHfoudWN">点击查看介绍</div>
+    <div class="station" style="left:60.5%;top:77.5%" data-station="seine">
+      <div class="node">06</div>
+      <div class="tip">Seine &amp; City Life · 连接者的星球</div>
     </div>
   </div>
 
-  <footer class="colophon" data-page-node-id="j4svAg33smTsTZqnHJgTsd">
-    <div class="rule" data-page-node-id="40cD8r9bcEOghsosXTi9iF"></div>
-    <div data-page-node-id="vsyAKIyCtBJoi03omiiwF0">INSPIRED BY ANTOINE DE SAINT-EXUPÉRY · 《小王子》1943</div>
-    <div data-page-node-id="sgEkeDRp8T0Oz8mejSNq0m">点击任意星球，听它讲自己的故事</div>
+  <div class="map-hint">🔍 点击地图任意位置，放大看手绘细节 · 点击金色节点，小王子会走去那颗星球</div>
+
+  <footer class="colophon">
+    <div class="rule"></div>
+    <div>INSPIRED BY ANTOINE DE SAINT-EXUPÉRY · 《小王子》1943</div>
+    <div>Paris, where imagination meets the world.</div>
   </footer>
 
   <div class="next-chapter">
@@ -386,89 +406,108 @@
   </div>
 </div>
 
-<div class="overlay" id="overlay" data-page-node-id="F7FnSsqsEvO7AtO7BkG21J">
-  <div class="modal" id="modal" data-page-node-id="gxnqrchwuPt21FLmsWPDj5"></div>
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="viewer" id="viewer">
+  <img id="viewerImg" src="paris-map.jpg" alt="巴黎梦想家地图 · 细节视图">
+  <div class="v-bar">
+    <button id="vOut" aria-label="缩小">−</button>
+    <button id="vReset" aria-label="复位">⤢</button>
+    <button id="vIn" aria-label="放大">＋</button>
+    <button id="vClose" aria-label="关闭">✕</button>
+  </div>
+  <div class="v-hint">滚轮缩放 · 拖拽平移 · 双击放大 2×</div>
 </div>
 
 <script>
-const PLANETS = {
-  eiffel:{
-    no:"01", char:"点灯人的星球", name:"埃菲尔铁塔", en:"Tour Eiffel",
-    tags:["1889 年","战神广场","330 米"],
+const STATIONS = {
+  montmartre:{
+    no:"01", char:"梦想家的星球", name:"蒙马特高地", en:"Montmartre · The Dreamer",
+    tags:["圣心堂","小丘广场","爱墙"],
     body:[
-      "1889 年，古斯塔夫·埃菲尔为巴黎世界博览会设计了这座铁塔——高 330 米，在之后的四十年里一直是世界上最高的建筑。落成之初它曾被艺术家们联名抵制，如今却成了巴黎本身的名字。",
-      "每到日落后的整点，两万盏金灯会同时闪烁五分钟。整座城市安静下来抬头看它的样子，很像小王子遇到的那位点灯人：一丝不苟地，把自己的星球点亮一遍又一遍。",
-      "乘电梯登上塔顶，可以看见巴黎所有的屋顶铺向地平线。如果你的旅程从这里开始，那正好——从这里起飞，去往下一颗星球。"
+      "蒙马特是巴黎北郊的一座山丘，130 米高的山顶立着乳白色的圣心堂；十九世纪末，因为房租便宜、天光又好，毕加索、梵高、莫迪利亚尼这些穷画家都聚到了这里——他们不是先有钱才画画的，是先做梦才有钱的。",
+      "小丘广场上，画家们支起画架给路人画像，一坐就是一下午。整座山丘的空气里都是颜料味：爱墙写满 311 种语言的『我爱你』，红磨坊的风车转了一百多年，每一块鹅卵石都被浪漫用过。",
+      "梦想家的星球教小王子的事：世界不是被发现的，是被想象出来的——然后有人认认真真，把想象画了出来。"
     ],
-    quote:"“正因为你为你的玫瑰花费了时间，你的玫瑰才变得如此重要。”",
-    link:{url:"https://www.toureiffel.paris/en", label:"官网 · toureiffel.paris"}
+    quote:"“这里的人们，创造他们想象中的世界。”",
+    link:{url:"https://www.sacre-coeur-montmartre.com/english/", label:"官网 · sacre-coeur-montmartre.com"}
   },
-  triomphe:{
-    no:"02", char:"虚荣的人的星球", name:"凯旋门", en:"Arc de Triomphe",
-    tags:["1836 年","香榭丽舍大街","戴高乐广场"],
+  orsay:{
+    no:"02", char:"观察者的星球", name:"奥赛博物馆", en:"Musée d'Orsay · The Observer",
+    tags:["1900 年火车站","印象派殿堂","巨型大钟"],
     body:[
-      "1806 年拿破仑在奥斯特里茨战役后下令修建，1836 年落成。门上刻着跟随帝国大军出征的 660 位将领的名字与四组巨型浮雕，是献给「荣耀」本身的建筑。",
-      "拱门正下方是无名烈士墓，长明火自 1923 年燃烧至今，每天傍晚都会被重新点燃一次——像那位虚荣的人脱帽致意，等待着不为任何人、却为所有人的掌声。",
-      "十二条林荫大道以凯旋门为圆心向四面放射，香榭丽舍大街从门前笔直铺向卢浮宫。站在门顶环顾，你会明白为什么全世界都愿意为它驻足。"
+      "1900 年万国博览会时，这里是奥赛火车站；车站废弃后差点被拆掉，1986 年改建成博物馆——把『过去』郑重地装进了『未来』的玻璃拱顶之下。",
+      "馆里藏着全世界最集中的印象派收藏：莫奈的睡莲、梵高的星夜与自画像、雷诺阿的舞会、德加的芭蕾……五层楼看下来，就像看一群画家学会用光思考的全过程。",
+      "大厅尽头那面巨型时钟是奥赛的名片——透过表盘的玻璃望出去，塞纳河在刻度之间流淌。观察者的星球教人的事：慢下来，先看，再看见。"
     ],
-    quote:"“虚荣的人听不见别的，只有赞美。”",
-    link:{url:"https://www.paris-arc-de-triomphe.fr/en", label:"官网 · paris-arc-de-triomphe.fr"}
+    quote:"“过去，帮助我们看见未来。”",
+    link:{url:"https://www.musee-orsay.fr/en", label:"官网 · musee-orsay.fr"}
+  },
+  marais:{
+    no:"03", char:"探索者的星球", name:"玛黑区", en:"Le Marais · The Explorer",
+    tags:["孚日广场","中世纪街巷","独立小店"],
+    body:[
+      "玛黑区是巴黎少有的『整块活着的旧城』：中世纪的窄巷没有被奥斯曼大道推平，鹅卵石路、十七世纪的私邸旅馆和犹太区的生活气，层层叠叠地摞在同一片街区内。",
+      "孚日广场是巴黎最老的皇家广场，雨果的故居就在角落里；如今设计师小店、画廊、美术馆和 falafel 小馆挤在同一条巷子——转一个弯，就换一种人生。",
+      "探索者的星球上没有路标，只有相遇。狐狸说『驯养』需要耐心，逛玛黑区也一样：别赶路，走进任何一扇开着门的小店，都是一颗新的星球。"
+    ],
+    quote:"“每一次相遇，都是一颗新的星球。”",
+    link:{url:"https://www.carnavalet.paris.fr/en", label:"官网 · musée Carnavalet"}
   },
   louvre:{
-    no:"03", char:"商人的星球", name:"卢浮宫", en:"Musée du Louvre",
+    no:"04", char:"追寻者的星球", name:"卢浮宫", en:"Musée du Louvre · The Seeker",
     tags:["1793 年开放","贝聿铭金字塔","50 万+ 藏品"],
     body:[
       "它先是一座 12 世纪的城堡，然后是历代国王的宫殿，1793 年起成为向公众开放的博物馆。如今馆内收藏超过 50 万件作品，从《汉谟拉比法典》到德拉克洛瓦，横跨七千年。",
-      "1989 年，贝聿铭设计的玻璃金字塔落在拿破仑庭院正中，把古典宫墙与当代几何接在了一起——每年一千多万人从这里走进地下，再走进历史。",
-      "《蒙娜丽莎》《断臂维纳斯》《胜利女神》在各自的展厅里被人群围观。小王子里的商人不停地数着星星，说「我拥有它们，所以我富有」——而卢浮宫把整个文明数了一遍。"
+      "1989 年，贝聿铭设计的玻璃金字塔落在拿破仑庭院正中，把古典宫墙与当代几何接在了一起——每年上千万人从这里走进地下，再走进历史。",
+      "《蒙娜丽莎》《断臂维纳斯》《胜利女神》被人群围着看。小王子里的商人不停地数星星，说『我拥有它们，所以我富有』；卢浮宫把整个文明数了一遍——而追寻者想知道的是：数完之后，什么才真正属于我们。"
     ],
-    quote:"“我拥有星星，因为我从未离开过我的星球去数它们。”",
+    quote:"“美的真正价值是什么？”",
     link:{url:"https://www.louvre.fr/en", label:"官网 · louvre.fr"}
   },
-  notredame:{
-    no:"04", char:"国王的星球", name:"巴黎圣母院", en:"Notre-Dame de Paris",
-    tags:["1163 年动工","西岱岛","2024 年重新开放"],
+  latin:{
+    no:"05", char:"思想者的星球", name:"拉丁区", en:"Latin Quarter · The Thinker",
+    tags:["索邦大学","先贤祠","花神咖啡馆"],
     body:[
-      "1163 年动工的哥特式主教座堂，两座塔楼、飞扶壁与三朵玫瑰花窗，在西岱岛上已守望塞纳河八百余年。它见证了拿破仑的加冕，也见证了圣女贞德的平反。",
-      "2019 年 4 月的大火让塔尖坍塌、举世揪心；此后五年，八百名工匠以中世纪的工艺与现代的技术将它一寸寸修复，2024 年 12 月重新敞开大门。",
-      "1831 年雨果为唤醒人们保护这座教堂写下了《巴黎圣母院》。在这里，国王的星球不靠权力统治，而是靠八百年来不断被讲述的故事。"
+      "拉丁区因中世纪的学生们在街上讲拉丁语而得名，索邦大学从 1257 年起就在这里讲课；直到今天，整片街区仍被书店、学院和学生塞得满满当当。",
+      "先贤祠的门楣上写着『献给伟大的人物，祖国感谢你们』——居里、雨果、伏尔泰安睡于此；圣日耳曼大道的花神咖啡馆里，萨特和波伏娃曾经一杯咖啡写一下午。",
+      "左岸桥头的莎士比亚书店，海明威和菲茨杰拉德都是从这里借书开始写作的。思想者的星球不生产答案，它只负责把问题一代一代传下去。"
     ],
-    quote:"“审判自己，比审判别人难得多。”",
-    link:{url:"https://www.notredamedeparis.fr/en/", label:"官网 · notredamedeparis.fr"}
+    quote:"“思想改变世界。”",
+    link:{url:"https://www.paris-pantheon.fr/en", label:"官网 · paris-pantheon.fr"}
   },
-  sacrecoeur:{
-    no:"05", char:"地理学家的星球", name:"圣心堂 · 蒙马特", en:"Sacré-Cœur · Montmartre",
-    tags:["1914 年落成","蒙马特高地","城市最高点"],
+  seine:{
+    no:"06", char:"连接者的星球", name:"塞纳河与城市生活", en:"Seine & City Life · The Connector",
+    tags:["37 座桥","绿箱旧书摊","左岸右岸"],
     body:[
-      "1875 至 1914 年间，圣心堂建在蒙马特高地之巅，是巴黎最高的可登顶观景点之一。它通体使用特鲁瓦出产的乳白石，雨水冲刷后会愈发洁白，像一颗永远崭新的星球。",
-      "乘缆车或走完山坡台阶，转身即是整座巴黎铺展在脚下；130 米高的圆顶之内，是世界上最大的马赛克画之一《基督圣荣》。",
-      "小王子的地理学家从不离开书桌，却记录着山川与河流。而在蒙马特，毕加索、莫迪利亚尼和一代代画家代替他丈量这座城市——如今小丘广场上，画家们仍在画。"
+      "塞纳河把巴黎分成左岸与右岸，又用 37 座桥把它们缝在一起。河是这座城市的客厅——散步的人、画画的人、接吻的人和拉手风琴的人，都在河岸上。",
+      "桥边的墨绿色旧书摊（bouquinistes）从十六世纪沿河排到今天，九百多个绿箱子卖旧书、老海报和发黄的明信片，被称作『世界上最长的露天书店』。",
+      "傍晚登上一艘游船，巴黎从两岸缓缓向后退去。连接者的星球提醒小王子：城市和玫瑰一样——因为有人日复一日照料它，它才是活的。"
     ],
-    quote:"“地理学家的书，是所有书中最容易过时的。”",
-    link:{url:"https://www.sacre-coeur-montmartre.com/english/", label:"官网 · sacre-coeur-montmartre.com"}
+    quote:"“因为有人，城市才是活的。”",
+    link:{url:"https://www.parisinfo.com", label:"官网 · parisinfo.com"}
   }
 };
 
 const overlay = document.getElementById('overlay');
 const modal = document.getElementById('modal');
 const traveler = document.getElementById('traveler');
-
 const footsteps = document.getElementById('footsteps');
+const mapEl = document.getElementById('map');
 
 function feetPos(el){
   if(!el) return null;
-  const ball = el.querySelector('.planet-img');
-  if(!ball) return null;
-  const map = traveler.offsetParent;                 // .map
-  const br = ball.getBoundingClientRect();
-  const mr = map.getBoundingClientRect();
+  const mr = traveler.offsetParent.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
   return {
-    x: br.left + br.width/2 - mr.left,                // 球心 x
-    y: br.top - mr.top + 8                            // 图顶边缘（小王子脚下）
+    x: r.left + r.width/2 - mr.left,
+    y: r.top + r.height - mr.top + 4
   };
 }
 
-function placeTraveler(el){                           // 初始瞬时落位（无动画）
+function placeTraveler(el){
   const p = feetPos(el);
   if(!p) return;
   traveler.style.transition = 'none';
@@ -476,7 +515,7 @@ function placeTraveler(el){                           // 初始瞬时落位（�
   traveler.style.top  = p.y + 'px';
 }
 
-function dropFootprint(x, y, side){                   // 落下一只脚印，随后自行淡出
+function dropFootprint(x, y, side){
   const f = document.createElement('div');
   f.className = 'footprint';
   f.style.left = x + 'px';
@@ -488,14 +527,13 @@ function dropFootprint(x, y, side){                   // 落下一只脚印，�
 }
 
 let footTimer = null, modalTimer = null;
-function walkTo(el, onDone){                          // 走过去 + 身后脚印由远到近淡出
+function walkTo(el, onDone){
   const target = feetPos(el);
   if(!target) return;
-  const map = traveler.offsetParent;
-  const mr  = map.getBoundingClientRect();
+  const mr  = traveler.offsetParent.getBoundingClientRect();
   const tr  = traveler.getBoundingClientRect();
-  const sx = tr.left + tr.width/2 - mr.left;          // 当前脚下 x
-  const sy = tr.top  + tr.height  - mr.top;           // 当前脚下 y
+  const sx = tr.left + tr.width/2 - mr.left;
+  const sy = tr.top  + tr.height  - mr.top;
   const dx = target.x - sx, dy = target.y - sy;
   const dist = Math.hypot(dx, dy);
   const dur = Math.max(700, Math.min(1700, dist * 1.7));
@@ -518,13 +556,13 @@ function walkTo(el, onDone){                          // 走过去 + 身后脚�
   }, ticks);
   if(onDone){ modalTimer = setTimeout(onDone, dur + 80); }
 }
-placeTraveler(document.querySelector('[data-planet="eiffel"]'));  // 初始停在 1 号星球旁
+placeTraveler(document.getElementById('hub'));
 
-function openPlanet(key){
-  const p = PLANETS[key];
+function openStation(key){
+  const p = STATIONS[key];
   if(!p) return;
-  const el = document.querySelector('[data-planet="'+key+'"]');
-  walkTo(el, () => showModal(p));   // 小王子先走过去，再弹出介绍
+  const el = document.querySelector('[data-station="'+key+'"]');
+  walkTo(el, () => showModal(p));
 }
 
 function showModal(p){
@@ -542,16 +580,88 @@ function showModal(p){
   overlay.classList.add('open');
   document.body.style.overflow='hidden';
 }
-function closePlanet(){
+function closeStation(){
   overlay.classList.remove('open');
   document.body.style.overflow='';
 }
-document.querySelectorAll('[data-planet]').forEach(el=>{
-  el.addEventListener('click',()=>openPlanet(el.dataset.planet));
+document.querySelectorAll('[data-station]').forEach(el=>{
+  el.addEventListener('click',()=>openStation(el.dataset.station));
 });
-modal.addEventListener('click',e=>{ if(e.target.classList.contains('modal-close')) closePlanet(); });
-overlay.addEventListener('click',e=>{ if(e.target===overlay) closePlanet(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePlanet(); });
+modal.addEventListener('click',e=>{ if(e.target.classList.contains('modal-close')) closeStation(); });
+overlay.addEventListener('click',e=>{ if(e.target===overlay) closeStation(); });
+
+/* ---------- 地图细节查看器：点击地图任意处放大，滚轮缩放/拖拽平移/双击 2x ---------- */
+const viewer = document.getElementById('viewer');
+const vimg = document.getElementById('viewerImg');
+let vs = 1, vx = 0, vy = 0, fitScale = 1;
+
+function vApply(){ vimg.style.transform = 'translate(' + vx + 'px,' + vy + 'px) scale(' + vs + ')'; }
+function fitViewer(){
+  const natW = vimg.naturalWidth || 1536, natH = vimg.naturalHeight || 1024;
+  fitScale = Math.min((innerWidth - 40) / natW, (innerHeight - 40) / natH);
+  vs = fitScale;
+  vx = (innerWidth - natW * vs) / 2;
+  vy = (innerHeight - natH * vs) / 2;
+  vApply();
+}
+function zoomAt(cx, cy, factor){
+  const ns = Math.min(6, Math.max(0.4, vs * factor));
+  const k = ns / vs;
+  vx = cx - (cx - vx) * k;
+  vy = cy - (cy - vy) * k;
+  vs = ns;
+  vApply();
+}
+function openViewer(){
+  viewer.classList.add('open');
+  fitViewer();
+  document.body.style.overflow = 'hidden';
+}
+function closeViewer(){
+  viewer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+mapEl.addEventListener('click', e => {
+  if(e.target.closest('.station')) return;   // 星球节点有自己的交互
+  openViewer();
+});
+vimg.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+}, { passive:false });
+
+let dragging = false, px = 0, py = 0;
+vimg.addEventListener('pointerdown', e => {
+  dragging = true; px = e.clientX; py = e.clientY;
+  vimg.setPointerCapture(e.pointerId);
+});
+vimg.addEventListener('pointermove', e => {
+  if(!dragging) return;
+  vx += e.clientX - px; vy += e.clientY - py;
+  px = e.clientX; py = e.clientY;
+  vApply();
+});
+vimg.addEventListener('pointerup', () => { dragging = false; });
+vimg.addEventListener('pointercancel', () => { dragging = false; });
+vimg.addEventListener('dblclick', e => {
+  e.preventDefault();
+  if(Math.abs(vs - fitScale) < 0.01) zoomAt(e.clientX, e.clientY, 2.4);
+  else fitViewer();
+});
+document.getElementById('vIn').addEventListener('click', () => zoomAt(innerWidth/2, innerHeight/2, 1.25));
+document.getElementById('vOut').addEventListener('click', () => zoomAt(innerWidth/2, innerHeight/2, 0.8));
+document.getElementById('vReset').addEventListener('click', fitViewer);
+document.getElementById('vClose').addEventListener('click', closeViewer);
+viewer.addEventListener('click', e => { if(e.target === viewer) closeViewer(); });
+window.addEventListener('resize', () => {
+  if(viewer.classList.contains('open') && Math.abs(vs - fitScale) < 0.001) fitViewer();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(viewer.classList.contains('open')) closeViewer();
+    else closeStation();
+  }
+});
 
 /* ---------- 封面翻书：点击 THE CITY OF DREAMERS 翻开书封跳到第一章 ---------- */
 const bookLeaf = document.getElementById('bookLeaf');
@@ -561,9 +671,9 @@ let coverFlipped = false;
 function openChapter(){
   if(coverFlipped) return;
   coverFlipped = true;
-  bookLeaf.classList.add('flipped');              // 书封沿书脊翻开
+  bookLeaf.classList.add('flipped');
   setTimeout(() => {
-    bookOverlay.style.display = 'none';            // 翻完隐藏封面层
+    bookOverlay.style.display = 'none';
     const ch = document.getElementById('chapter-01');
     if(ch) ch.scrollIntoView({ behavior:'smooth', block:'start' });
   }, 950);
