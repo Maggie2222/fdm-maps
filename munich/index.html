@@ -228,12 +228,20 @@
     .masthead h1{font-size:28px;letter-spacing:3px;}
     .modal{padding:34px 26px 30px;}
   }
+.topnav{display:flex;justify-content:space-between;align-items:center;max-width:920px;margin:0 auto;padding:16px 24px 4px;font-family:"Noto Serif SC",serif;}
+.topnav a{text-decoration:none;color:var(--steam);font-size:13px;letter-spacing:2px;opacity:.75;transition:color .2s,opacity .2s;}
+.topnav a:hover{color:var(--brass);opacity:1;}
+.topnav .home{font-family:"Playfair Display",serif;letter-spacing:1px;}
+.topnav .sib{color:var(--brass);}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <a class="back" href="../paris/">&#8592; Chapter 1 · Paris 星球之旅</a>
+  <nav class="topnav">
+    <a class="home" href="../">&#8592; 首页 · Once Upon a Business</a>
+    <a class="sib" href="../paris/">Chapter 1 · Paris &#8594;</a>
+  </nav>
 
   <div class="chapter-head" id="chapter-02">
     <div class="ch-no">Chapter 02</div>
