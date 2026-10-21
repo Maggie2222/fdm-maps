@@ -12,85 +12,94 @@
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
   #stage{position:relative;width:min(100vw,177.78vh);height:min(56.25vw,100vh);
     overflow:hidden;background:#1a1320;box-shadow:0 0 80px rgba(0,0,0,.6)}
-  .scene{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease;pointer-events:none}
+  .scene{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;pointer-events:none}
   .scene.active{opacity:1}
 
-  /* ===== Act 1/2 法国：明信片(刻板印象) —— 裂缝后露出印象派画作 ===== */
+  /* ===== Act 1/2 法国：明信片(刻板印象) —— 裂开后印象派画作完整接管 ===== */
   #scene-paris .reveal{position:absolute;inset:0;background:url('assets/impressionist.png') center/cover;
-    transform:scale(1.08);filter:brightness(.42) saturate(.85) blur(1px);
-    transition:filter 1.4s ease, transform 1.6s ease}
-  #scene-paris.cracked .reveal{filter:brightness(1) saturate(1) blur(0);transform:scale(1)}
-  #scene-paris .split{position:absolute;inset:0;background:url('assets/paris-postcard.png') center/cover;
-    will-change:transform}
-  #scene-paris.cracked .half-l{animation:pullL .9s cubic-bezier(.2,.85,.3,1) forwards}
-  #scene-paris.cracked .half-r{animation:pullR .9s cubic-bezier(.2,.85,.3,1) forwards}
-  @keyframes pullL{to{transform:translateX(-4.2%) rotate(-.6deg)}}
-  @keyframes pullR{to{transform:translateX(4.2%) rotate(.6deg)}}
+    transform:scale(1.1);filter:brightness(.4) saturate(.8) blur(1.5px);
+    transition:filter 1s ease, transform 1.2s ease}
+  #scene-paris.cracked .reveal{filter:brightness(1.02) saturate(1) blur(0);transform:scale(1)}
+  #scene-paris .split{position:absolute;inset:0;background:url('assets/paris-postcard.png') center/cover;will-change:transform}
+  #scene-paris.cracked .half-l{animation:pullL .9s cubic-bezier(.22,.85,.3,1) forwards}
+  #scene-paris.cracked .half-r{animation:pullR .9s cubic-bezier(.22,.85,.3,1) forwards}
+  @keyframes pullL{
+    0%{transform:translateX(0) rotate(0);opacity:1}
+    20%{transform:translateX(-5%) rotate(-.8deg);opacity:1}
+    100%{transform:translateX(-19%) rotate(-2.6deg);opacity:0}}
+  @keyframes pullR{
+    0%{transform:translateX(0) rotate(0);opacity:1}
+    20%{transform:translateX(5%) rotate(.8deg);opacity:1}
+    100%{transform:translateX(19%) rotate(2.6deg);opacity:0}}
   #scene-paris .pink{position:absolute;inset:0;background:
     radial-gradient(120% 90% at 50% 0%, rgba(255,200,220,.20), transparent 60%),
-    linear-gradient(180deg, rgba(255,180,205,.12), rgba(255,210,225,.06));mix-blend-mode:soft-light;pointer-events:none}
-  .seam{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s ease;z-index:6}
+    linear-gradient(180deg, rgba(255,180,205,.12), rgba(255,210,225,.06));mix-blend-mode:soft-light;pointer-events:none;
+    transition:opacity .8s ease}
+  #scene-paris.cracked .pink{opacity:.35}
+  .seam{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .15s ease;z-index:6}
   .cracked .seam{opacity:1}
   .seam path{fill:none;stroke:rgba(255,252,246,.95);stroke-width:.45;
     filter:drop-shadow(0 0 6px rgba(255,255,255,.75))}
-  .cracked .seam path{animation:seamDraw .5s ease forwards}
+  .cracked .seam path{animation:seamDraw .4s ease forwards}
   @keyframes seamDraw{to{stroke-dashoffset:0}}
   .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7}
-  .cracked .flash{animation:flashPop .45s ease-out forwards}
-  @keyframes flashPop{0%{opacity:.85}40%{opacity:.28}100%{opacity:0}}
+  .cracked .flash{animation:flashPop .38s ease-out forwards}
+  @keyframes flashPop{0%{opacity:.8}40%{opacity:.26}100%{opacity:0}}
 
-  /* ===== Act 3/4 德国：蓝图 —— 齿轮先啮合运转，随后失同步 ===== */
+  /* ===== Act 3/4 德国：蓝图 —— 齿轮真正相切啮合运转，随后失同步 ===== */
   #scene-germany .blue{position:absolute;inset:0;background:url('assets/germany-blueprint.png') center/cover;
-    filter:contrast(1.04) brightness(1.02)}
-  #scene-germany .blue-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,55,90,.42),rgba(12,22,40,.52))}
-  #scene-germany .route{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
+    filter:contrast(1.02) brightness(.9)}
+  #scene-germany .blue-tint{position:absolute;inset:0;
+    background:radial-gradient(46% 62% at 48% 40%, rgba(18,34,60,.18), rgba(10,20,38,.62) 78%),
+    linear-gradient(180deg,rgba(30,55,90,.3),rgba(12,22,40,.45))}
+  #scene-germany .route{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;z-index:5}
   #scene-germany.reverse .route{opacity:1}
-  .gears{position:absolute;inset:0;pointer-events:none;z-index:4}
-  .gear{position:absolute;transform:translate(-50%,-50%)}
-  .gear .gsvg{width:100%;height:100%;display:block;transform-origin:center;
-    animation:rot var(--dur) linear infinite;animation-direction:var(--dir)}
+  .gears{position:absolute;inset:0;z-index:4;pointer-events:none}
+  .gears svg{width:100%;height:100%;display:block}
+  .gear .spin{animation:rot var(--dur) linear infinite;animation-direction:var(--dir)}
   @keyframes rot{to{transform:rotate(360deg)}}
-  .gear .gpath{fill:rgba(201,155,74,.10);stroke:#d8ab63;stroke-width:1.6;stroke-linejoin:round}
-  .gear .gspoke{stroke:#d8ab63;stroke-width:1.2;opacity:.8}
-  .gear .ghub{fill:rgba(16,28,48,.55);stroke:#d8ab63;stroke-width:1.4}
-  .gear .gring{fill:none;stroke:#d8ab63;stroke-width:.9;stroke-dasharray:3 3;opacity:.5}
-  /* 破局：齿轮不再严丝合缝 */
-  #scene-germany.desync .gear:nth-child(1) .gsvg{animation-duration:5.2s}
-  #scene-germany.desync .gear:nth-child(2) .gsvg{animation-duration:13s;animation-direction:normal}
-  #scene-germany.desync .gear:nth-child(3) .gsvg{animation-duration:6.4s;animation-direction:reverse}
-  #scene-germany.desync .gear:nth-child(4) .gsvg{animation-duration:9.8s}
+  .gear .gpath{fill:rgba(201,155,74,.13);stroke:#e0b165;stroke-width:3.2;stroke-linejoin:round}
+  .gear .gspoke{stroke:#e0b165;stroke-width:2.4;opacity:.75}
+  .gear .ghub{fill:rgba(14,26,46,.6);stroke:#e0b165;stroke-width:2.8}
+  .gear .gring{fill:none;stroke:#e0b165;stroke-width:1.8;stroke-dasharray:9 9;opacity:.4}
+  /* 破局：不再严丝合缝——各轮转速与相位全部错乱 */
+  #scene-germany.desync .gear:nth-child(1) .spin{animation-duration:2.2s}
+  #scene-germany.desync .gear:nth-child(2) .spin{animation-duration:7.5s;animation-direction:normal}
+  #scene-germany.desync .gear:nth-child(3) .spin{animation-duration:3.1s;animation-direction:reverse}
+  #scene-germany.desync .gear:nth-child(4) .spin{animation-duration:5.4s}
+  #scene-germany.desync .gear:nth-child(5) .spin{animation-duration:1.7s;animation-direction:reverse}
 
   /* ===== Act 5 重组 + 城堡 ===== */
   #scene-recombine{background:radial-gradient(80% 80% at 50% 50%, #2a2336, #0e0a14)}
   #scene-recombine .piece{position:absolute;width:40%;height:60%;top:20%;background-size:cover;background-position:center;
     border:8px solid rgba(246,236,216,.85);box-shadow:0 16px 50px rgba(0,0,0,.5);opacity:0}
-  #scene-recombine.active .pA{left:6%;animation:flyA 5s ease forwards}
-  #scene-recombine.active .pB{right:6%;animation:flyB 5s ease forwards}
+  #scene-recombine.active .pA{left:6%;animation:flyA 3.6s ease forwards}
+  #scene-recombine.active .pB{right:6%;animation:flyB 3.6s ease forwards}
   @keyframes flyA{0%{opacity:0;transform:translate(-40%,0) rotate(-18deg)}30%{opacity:1}
     100%{opacity:1;left:30%;transform:translate(0,0) rotate(-4deg)}}
   @keyframes flyB{0%{opacity:0;transform:translate(40%,0) rotate(18deg)}30%{opacity:1}
     100%{opacity:1;right:30%;transform:translate(0,0) rotate(4deg)}}
-  #scene-recombine .castle{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+  #scene-recombine .castle{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease}
   #scene-recombine.castle-in .castle{opacity:1}
-  #scene-recombine.castle-in .piece{opacity:0;transition:opacity .8s ease}
+  #scene-recombine.castle-in .piece{opacity:0;transition:opacity .6s ease}
 
   /* ===== 标题卡 ===== */
   #scene-title{background:radial-gradient(90% 90% at 50% 40%, #1b1426, #060409);
     display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-  #scene-title .kicker{font-family:"Playfair Display",serif;font-style:italic;color:#c9a15a;letter-spacing:3px;font-size:clamp(12px,1.6vw,22px);opacity:0;transition:opacity 1s ease}
+  #scene-title .kicker{font-family:"Playfair Display",serif;font-style:italic;color:#c9a15a;letter-spacing:3px;font-size:clamp(12px,1.6vw,22px);opacity:0;transition:opacity .8s ease}
   #scene-title .big{font-family:"Playfair Display",serif;font-weight:600;color:#f3ece0;letter-spacing:4px;
-    font-size:clamp(26px,4.6vw,62px);margin:.3em 0;opacity:0;transition:opacity 1.2s ease .3s}
+    font-size:clamp(26px,4.6vw,62px);margin:.3em 0;opacity:0;transition:opacity 1s ease .25s}
   #scene-title .sub{font-family:"Noto Serif SC",serif;font-weight:300;color:#b9aec4;letter-spacing:1px;
-    font-size:clamp(12px,1.8vw,24px);opacity:0;transition:opacity 1.2s ease .7s}
-  #scene-title .star{margin-top:5vh;opacity:0;transition:opacity 1.4s ease 1.1s}
+    font-size:clamp(12px,1.8vw,24px);opacity:0;transition:opacity 1s ease .55s}
+  #scene-title .star{margin-top:5vh;opacity:0;transition:opacity 1.1s ease .85s}
   #scene-title.active .kicker,#scene-title.active .big,#scene-title.active .sub,#scene-title.active .star{opacity:1}
 
   /* ===== 字幕（始终单行，超宽自动缩放） ===== */
-  #subtitle{position:absolute;left:50%;transform:translateX(-50%);bottom:7%;white-space:nowrap;
-    text-align:center;padding:.42em 1.05em;background:rgba(16,11,20,.62);border:1px solid rgba(243,236,224,.22);
+  #subtitle{position:absolute;left:50%;transform:translateX(-50%);bottom:6.5%;white-space:nowrap;
+    text-align:center;padding:.4em 1.05em;background:rgba(16,11,20,.62);border:1px solid rgba(243,236,224,.22);
     border-radius:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-    font-family:"Noto Serif SC",serif;font-weight:600;color:#fdf6ea;font-size:clamp(16px,2.7vw,36px);
-    letter-spacing:1.5px;text-shadow:0 2px 10px rgba(0,0,0,.6);opacity:0;transition:opacity .5s ease;z-index:30}
+    font-family:"Noto Serif SC",serif;font-weight:600;color:#fdf6ea;font-size:clamp(15px,2.5vw,34px);
+    letter-spacing:1.5px;text-shadow:0 2px 10px rgba(0,0,0,.6);opacity:0;transition:opacity .4s ease;z-index:30}
   #subtitle.show{opacity:1}
   #subtitle.france{border-color:rgba(192,83,62,.7);box-shadow:0 0 26px rgba(192,83,62,.28)}
 
@@ -157,7 +166,7 @@
 
     <div id="intro">
       <h1>The Art of Reinvention</h1>
-      <p>Paris · Munich — 一段 40 秒的序章</p>
+      <p>Paris · Munich — 一段 30 秒的序章</p>
       <div class="play">▶ 播放预告片</div>
     </div>
 
@@ -166,7 +175,7 @@
 
 <script>
 (function(){
-  /* 竖向锯齿裂缝（按手绘稿：一条从上到下的折线，把画面劈成两半） */
+  /* 竖向锯齿裂缝：一条从上到下的折线，把画面劈成两半 */
   var CRACK = [[57,0],[52,7],[60,13],[47,21],[55,29],[41,37],[50,45],
                [36,53],[46,61],[39,69],[47,77],[43,85],[48,93],[45,100]];
 
@@ -189,10 +198,32 @@
     }
   }
 
-  /* 齿轮：程序生成齿形，四个大小不一的齿轮互相啮合 */
-  function gearPath(n, R, r){
+  /* ---- 齿轮组：统一模数 u=10.5（r = u*n，所有轮齿距相同），
+         中心距 = 两轮分度圆半径之和（外切），转速周期 ∝ 半径，相邻反向 ---- */
+  var U = 10.5;
+  var GEARS = [
+    {n:18, x:200, y:320, dir: 1},
+    {n:13, x:0,   y:0,   dir:-1},
+    {n:16, x:0,   y:0,   dir: 1},
+    {n:11, x:0,   y:0,   dir:-1},
+    {n:8,  x:0,   y:0,   dir: 1}
+  ];
+  GEARS.forEach(function(g){ g.r = g.n * U; });   // 分度圆半径
+  var LINKS = [ 10, -9, 15, -6 ];   // 每级连线的角度
+
+  function layoutGears(){
+    GEARS[0].x = 200; GEARS[0].y = 320;
+    for(var i=1;i<GEARS.length;i++){
+      var a = LINKS[i-1]*Math.PI/180;
+      var d = GEARS[i-1].r + GEARS[i].r;      // 外径相切：中心距 = 两轮半径之和
+      GEARS[i].x = GEARS[i-1].x + d*Math.cos(a);
+      GEARS[i].y = GEARS[i-1].y + d*Math.sin(a);
+    }
+  }
+
+  function gearPath(n,R,r,cx,cy){
     var step=2*Math.PI/n, d='';
-    function pt(a,rad){ return (Math.cos(a)*rad).toFixed(2)+','+(Math.sin(a)*rad).toFixed(2); }
+    function pt(a,rad){ return (cx+Math.cos(a)*rad).toFixed(2)+','+(cy+Math.sin(a)*rad).toFixed(2); }
     for(var i=0;i<n;i++){
       var a0=i*step;
       d += (i?'L':'M') + pt(a0+step*0.08, r);
@@ -203,37 +234,49 @@
     return d+'Z';
   }
 
+  /* 啮合相位求解：
+     约束 n_p*(α-φ_p) + n_g*(α+180-φ_g) ≡ C0 (mod 360)
+     C0=90 保证齿正对齿隙 */
+  function gearPhases(){
+    var C0 = 90, phi = [0];
+    for(var i=1;i<GEARS.length;i++){
+      var p = GEARS[i-1], g = GEARS[i], a = LINKS[i-1];
+      phi[i] = 180 + a - (C0 - p.n*(a - phi[i-1]))/g.n;
+    }
+    return phi;
+  }
+
   function buildGears(box){
     if(!box) return;
-    var cfg=[
-      {x:21,y:38,s:27,n:16,dur:10,dir:1},
-      {x:44,y:53,s:18,n:11,dur:7.2,dir:-1},
-      {x:64,y:34,s:21,n:13,dur:8.4,dir:1},
-      {x:85,y:52,s:14,n:9, dur:5.6,dir:-1}
-    ];
-    var html='';
-    cfg.forEach(function(g){
-      var R=46, r=38;
-      html += '<div class="gear" style="left:'+g.x+'%;top:'+g.y+'%;width:'+g.s+'%">'
-           +  '<svg class="gsvg" viewBox="-55 -55 110 110" style="--dur:'+g.dur+'s;--dir:'+(g.dir>0?'normal':'reverse')+'">'
-           +    '<path class="gpath" d="'+gearPath(g.n,R,r)+'"/>'
-           +    '<circle class="gring" cx="0" cy="0" r="50"/>'
-           +    '<line class="gspoke" x1="0" y1="0" x2="0" y2="-36"/>'
-           +    '<line class="gspoke" x1="0" y1="0" x2="34" y2="10"/>'
-           +    '<line class="gspoke" x1="0" y1="0" x2="-20" y2="30"/>'
-           +    '<circle class="ghub" cx="0" cy="0" r="11"/>'
-           +  '</svg></div>';
+    layoutGears();
+    var T0 = 6, N0 = GEARS[0].n, phi = gearPhases();
+    var html='<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">';
+    GEARS.forEach(function(g, i){
+      var dur = T0*g.n/N0;                        // 周期 ∝ 齿数 ∝ 半径 → 线速度一致
+      var d = (phi[i]/(g.dir>0?360:-360)*dur)%dur; // 初始相位对齐齿隙
+      if(d<0) d += dur;
+      html += '<g class="gear"><g class="spin" style="transform-origin:'+g.x.toFixed(1)+'px '+g.y.toFixed(1)+'px;'
+           +   '--dur:'+dur.toFixed(2)+'s;--dir:'+(g.dir>0?'normal':'reverse')+';animation-delay:-'+d.toFixed(2)+'s">'
+           +   '<path class="gpath" d="'+gearPath(g.n, g.r + U*0.6, g.r - U*1.0, g.x, g.y)+'"/>'
+           +   '<circle class="gring" cx="'+g.x.toFixed(1)+'" cy="'+g.y.toFixed(1)+'" r="'+(g.r+12).toFixed(1)+'"/>'
+           +   '<line class="gspoke" x1="'+g.x.toFixed(1)+'" y1="'+g.y.toFixed(1)+'" x2="'+g.x.toFixed(1)+'" y2="'+(g.y-g.r*0.78).toFixed(1)+'"/>'
+           +   '<line class="gspoke" x1="'+g.x.toFixed(1)+'" y1="'+g.y.toFixed(1)+'" x2="'+(g.x+g.r*0.68).toFixed(1)+'" y2="'+(g.y+g.r*0.2).toFixed(1)+'"/>'
+           +   '<line class="gspoke" x1="'+g.x.toFixed(1)+'" y1="'+g.y.toFixed(1)+'" x2="'+(g.x-g.r*0.4).toFixed(1)+'" y2="'+(g.y+g.r*0.66).toFixed(1)+'"/>'
+           +   '<circle class="ghub" cx="'+g.x.toFixed(1)+'" cy="'+g.y.toFixed(1)+'" r="'+(g.r*0.22).toFixed(1)+'"/>'
+           + '</g></g>';
     });
+    html += '</svg>';
     box.innerHTML = html;
   }
 
+  /* 30 秒节奏：0-4.5 法国｜4.5-9 裂缝+印象派｜9-14 德国｜14-19.5 失同步｜19.5-25.5 重组+城堡｜25.5-30 标题 */
   var ACTS = [
-    {t:0,  dur:6, scene:'scene-paris',      sub:'你是否认为法国等于艺术、浪漫、优雅。',        mood:'paris'},
-    {t:6,  dur:6, scene:'scene-paris',      sub:'但如果，当时没有人认为它是艺术呢？',           mood:'silence'},
-    {t:12, dur:7, scene:'scene-germany',    sub:'你是否认为德国代表了工程、秩序、精密。',        mood:'germany'},
-    {t:19, dur:7, scene:'scene-germany',    sub:'但当整个系统需要改变时呢？',                    mood:'germany'},
-    {t:26, dur:8, scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？', mood:'suspense'},
-    {t:34, dur:6, scene:'scene-title',      sub:'',                                              mood:'fade'}
+    {t:0,    dur:4.5, scene:'scene-paris',      sub:'你是否认为法国等于艺术、浪漫、优雅。',        mood:'paris'},
+    {t:4.5,  dur:4.5, scene:'scene-paris',      sub:'但如果，当时没有人认为它是艺术呢？',           mood:'silence'},
+    {t:9,    dur:5,   scene:'scene-germany',    sub:'你是否认为德国代表了工程、秩序、精密。',        mood:'germany'},
+    {t:14,   dur:5.5, scene:'scene-germany',    sub:'但当整个系统需要改变时呢？',                    mood:'germany'},
+    {t:19.5, dur:6,   scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？', mood:'suspense'},
+    {t:25.5, dur:4.5, scene:'scene-title',      sub:'',                                              mood:'fade'}
   ];
 
   var stage = document.getElementById('stage');
@@ -247,13 +290,12 @@
   var muteBtn = document.getElementById('mute');
   var intro = document.getElementById('intro');
 
-  /* 应用裂缝：左右两半裁切 + 缝线 */
   scenes['scene-paris'].querySelector('.half-l').style.clipPath = crackPolygon('l');
   scenes['scene-paris'].querySelector('.half-r').style.clipPath = crackPolygon('r');
   buildSeam(scenes['scene-paris'].querySelector('.seam'));
   buildGears(document.querySelector('.gears'));
 
-  var TOTAL = 40;
+  var TOTAL = 30;
   var startTs = 0, raf = 0, curIdx = -1, muted = false, musicReady = false;
 
   /* ---- 极简配乐（Web Audio 合成，可整体替换为 mp3） ---- */
@@ -270,16 +312,16 @@
     }
     function pad(freqs){
       clear(); if(!ctx) return;
-      master.gain.linearRampToValueAtTime(0.12, ctx.currentTime+1.5);
+      master.gain.linearRampToValueAtTime(0.12, ctx.currentTime+1.2);
       freqs.forEach(function(f){
         var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
         var g=ctx.createGain(); g.gain.value=0; o.connect(g); g.connect(master);
-        g.gain.linearRampToValueAtTime(0.05, ctx.currentTime+2); o.start(); nodes.push(o);
+        g.gain.linearRampToValueAtTime(0.05, ctx.currentTime+1.5); o.start(); nodes.push(o);
       });
     }
     function tick(){
       clear(); if(!ctx) return;
-      master.gain.linearRampToValueAtTime(0.09, ctx.currentTime+0.4);
+      master.gain.linearRampToValueAtTime(0.09, ctx.currentTime+0.3);
       var on=true;
       var t=setInterval(function(){
         if(!ctx) return;
@@ -288,11 +330,11 @@
         var now=ctx.currentTime; g.gain.linearRampToValueAtTime(0.07, now+0.01);
         g.gain.exponentialRampToValueAtTime(0.0008, now+0.08);
         o.start(now); o.stop(now+0.1); on=!on;
-      }, 470); timers.push(t);
+      }, 400); timers.push(t);
     }
     function drone(){
       clear(); if(!ctx) return;
-      master.gain.linearRampToValueAtTime(0.13, ctx.currentTime+1.5);
+      master.gain.linearRampToValueAtTime(0.13, ctx.currentTime+1.2);
       [55,82.41].forEach(function(f){
         var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
         var g=ctx.createGain(); g.gain.value=0.06;
@@ -320,12 +362,11 @@
     var w = subtitle.getBoundingClientRect().width;
     if(w > avail && w > 0){
       var cur = parseFloat(getComputedStyle(subtitle).fontSize) || 16;
-      var next = Math.max(13, cur * (avail / w) * 0.97);
-      subtitle.style.fontSize = next.toFixed(1) + 'px';
+      subtitle.style.fontSize = Math.max(12, cur * (avail / w) * 0.97).toFixed(1) + 'px';
       w = subtitle.getBoundingClientRect().width;
       if(w > avail && w > 0){
         cur = parseFloat(getComputedStyle(subtitle).fontSize);
-        subtitle.style.fontSize = Math.max(13, cur * (avail / w) * 0.98).toFixed(1) + 'px';
+        subtitle.style.fontSize = Math.max(12, cur * (avail / w) * 0.98).toFixed(1) + 'px';
       }
     }
   }
@@ -347,7 +388,7 @@
     if(m==='paris') Music.pad([261.6,329.6,392.0]);
     else if(m==='germany'||m==='suspense'){ if(m==='germany') Music.tick(); else Music.drone(); }
     else if(m==='silence'){ Music.silence();
-      setTimeout(function(){ if(musicReady && curIdx===1) Music.pad([261.6,329.6]); }, 600);
+      setTimeout(function(){ if(musicReady && curIdx===1) Music.pad([261.6,329.6]); }, 500);
     }
     else if(m==='fade'){ Music.silence(); }
   }
@@ -359,7 +400,8 @@
     if(idx!==curIdx){
       curIdx=idx; setScene(idx); setSub(idx); setMood(idx);
     }
-    if(t>=31) scenes['scene-recombine'].classList.add('castle-in');
+    // Act5 晚期揭示城堡（22.5s 起）
+    if(t>=22.5) scenes['scene-recombine'].classList.add('castle-in');
     else scenes['scene-recombine'].classList.remove('castle-in');
     raf = requestAnimationFrame(frame);
   }
