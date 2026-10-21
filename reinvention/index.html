@@ -18,33 +18,40 @@
   /* ===== Act 1/2 法国：明信片(刻板印象) —— 裂开后印象派画作完整接管 ===== */
   #scene-paris .reveal{position:absolute;inset:0;background:url('assets/impressionist.png') center/cover;
     transform:scale(1.1);filter:brightness(.4) saturate(.8) blur(1.5px);
-    transition:filter 1s ease, transform 1.2s ease}
+    transition:filter .45s ease, transform .6s ease}
   #scene-paris.cracked .reveal{filter:brightness(1.02) saturate(1) blur(0);transform:scale(1)}
-  #scene-paris .split{position:absolute;inset:0;background:url('assets/paris-postcard.png') center/cover;will-change:transform}
-  #scene-paris.cracked .half-l{animation:pullL .9s cubic-bezier(.22,.85,.3,1) forwards}
-  #scene-paris.cracked .half-r{animation:pullR .9s cubic-bezier(.22,.85,.3,1) forwards}
-  @keyframes pullL{
-    0%{transform:translateX(0) rotate(0);opacity:1}
-    20%{transform:translateX(-5%) rotate(-.8deg);opacity:1}
-    100%{transform:translateX(-19%) rotate(-2.6deg);opacity:0}}
-  @keyframes pullR{
-    0%{transform:translateX(0) rotate(0);opacity:1}
-    20%{transform:translateX(5%) rotate(.8deg);opacity:1}
-    100%{transform:translateX(19%) rotate(2.6deg);opacity:0}}
+  #scene-paris .split{position:absolute;inset:0;background:url('assets/paris-postcard.png') center/cover;will-change:transform,opacity}
+  #scene-paris.cracked .shard-1{animation:flyL .5s cubic-bezier(.2,.8,.3,1) forwards}
+  #scene-paris.cracked .shard-2{animation:flyU .5s cubic-bezier(.2,.8,.3,1) forwards}
+  #scene-paris.cracked .shard-3{animation:flyR .5s cubic-bezier(.2,.8,.3,1) forwards}
+  @keyframes flyL{
+    0%{transform:translate(0,0) rotate(0);opacity:1}
+    18%{transform:translate(-3%,0) rotate(-.6deg);opacity:1}
+    100%{transform:translate(-30%,2%) rotate(-3deg);opacity:0}}
+  @keyframes flyU{
+    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+    18%{transform:translate(0,-2%) scale(1.03);opacity:1}
+    100%{transform:translate(0,-26%) scale(1.1) rotate(1.4deg);opacity:0}}
+  @keyframes flyR{
+    0%{transform:translate(0,0) rotate(0);opacity:1}
+    18%{transform:translate(3%,0) rotate(.6deg);opacity:1}
+    100%{transform:translate(30%,-2%) rotate(3deg);opacity:0}}
   #scene-paris .pink{position:absolute;inset:0;background:
     radial-gradient(120% 90% at 50% 0%, rgba(255,200,220,.20), transparent 60%),
     linear-gradient(180deg, rgba(255,180,205,.12), rgba(255,210,225,.06));mix-blend-mode:soft-light;pointer-events:none;
-    transition:opacity .8s ease}
-  #scene-paris.cracked .pink{opacity:.35}
-  .seam{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .15s ease;z-index:6}
+    transition:opacity .35s ease}
+  #scene-paris.cracked .pink{opacity:.3}
+  .seam{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .1s ease;z-index:6}
   .cracked .seam{opacity:1}
-  .seam path{fill:none;stroke:rgba(255,252,246,.95);stroke-width:.45;
-    filter:drop-shadow(0 0 6px rgba(255,255,255,.75))}
-  .cracked .seam path{animation:seamDraw .4s ease forwards}
+  .seam path{fill:none;stroke:rgba(255,252,246,.95);stroke-width:.5;
+    filter:drop-shadow(0 0 7px rgba(255,255,255,.85))}
+  /* 快速描出 → 短促停留 → 消失，不留痕 */
+  .cracked .seam path{animation:seamDraw .2s ease forwards, seamFade .22s ease .24s forwards}
   @keyframes seamDraw{to{stroke-dashoffset:0}}
+  @keyframes seamFade{to{opacity:0}}
   .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7}
-  .cracked .flash{animation:flashPop .38s ease-out forwards}
-  @keyframes flashPop{0%{opacity:.8}40%{opacity:.26}100%{opacity:0}}
+  .cracked .flash{animation:flashPop .28s ease-out forwards}
+  @keyframes flashPop{0%{opacity:.85}45%{opacity:.24}100%{opacity:0}}
 
   /* ===== Act 3/4 德国：蓝图 —— 齿轮真正相切啮合运转，随后失同步 ===== */
   #scene-germany .blue{position:absolute;inset:0;background:url('assets/germany-blueprint.png') center/cover;
@@ -123,8 +130,9 @@
     <!-- Act 1/2 法国 -->
     <div class="scene" id="scene-paris">
       <div class="reveal"></div>
-      <div class="split half-l"></div>
-      <div class="split half-r"></div>
+      <div class="split shard-1"></div>
+      <div class="split shard-2"></div>
+      <div class="split shard-3"></div>
       <div class="pink"></div>
       <svg class="seam" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
       <div class="flash"></div>
@@ -175,27 +183,42 @@
 
 <script>
 (function(){
-  /* 竖向锯齿裂缝：一条从上到下的折线，把画面劈成两半 */
-  var CRACK = [[57,0],[52,7],[60,13],[47,21],[55,29],[41,37],[50,45],
-               [36,53],[46,61],[39,69],[47,77],[43,85],[48,93],[45,100]];
+  /* 两道完整的闪电裂缝：把画面切成三片，碎片飞散后印象派画作完整接管 */
+  var CRACK_A = [[34,0],[28,6],[37,12],[26,19],[34,26],[24,33],[32,40],[22,47],
+                 [30,54],[20,61],[28,68],[19,75],[27,82],[21,89],[26,100]];
+  var CRACK_B = [[70,0],[77,7],[67,14],[78,21],[68,28],[80,35],[70,42],[81,49],
+                 [71,56],[82,63],[72,70],[83,77],[73,84],[79,91],[74,100]];
 
-  function crackPolygon(side){
-    var pts = [ side==='l' ? '0% 0%' : '100% 0%' ];
-    for(var i=0;i<CRACK.length;i++){ pts.push(CRACK[i][0]+'% '+CRACK[i][1]+'%'); }
-    pts.push(side==='l' ? '0% 100%' : '100% 100%');
+  function shardPolygon(k){
+    var pts;
+    if(k===1){
+      pts = ['0% 0%'];
+      for(var i=0;i<CRACK_A.length;i++) pts.push(CRACK_A[i][0]+'% '+CRACK_A[i][1]+'%');
+      pts.push('0% 100%');
+    } else if(k===2){
+      pts = [];
+      for(var i=0;i<CRACK_A.length;i++) pts.push(CRACK_A[i][0]+'% '+CRACK_A[i][1]+'%');
+      for(var j=CRACK_B.length-1;j>=0;j--) pts.push(CRACK_B[j][0]+'% '+CRACK_B[j][1]+'%');
+    } else {
+      pts = ['100% 0%'];
+      for(var i=0;i<CRACK_B.length;i++) pts.push(CRACK_B[i][0]+'% '+CRACK_B[i][1]+'%');
+      pts.push('100% 100%');
+    }
     return 'polygon(' + pts.join(',') + ')';
   }
 
   function buildSeam(svg){
     if(!svg) return;
     var NS='http://www.w3.org/2000/svg';
-    var p=document.createElementNS(NS,'polyline');
-    p.setAttribute('points', CRACK.map(function(c){return c[0]+','+c[1];}).join(' '));
-    svg.appendChild(p);
-    if(p.getTotalLength){
-      var len=p.getTotalLength();
-      p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
-    }
+    [CRACK_A, CRACK_B].forEach(function(C){
+      var p=document.createElementNS(NS,'polyline');
+      p.setAttribute('points', C.map(function(c){return c[0]+','+c[1];}).join(' '));
+      svg.appendChild(p);
+      if(p.getTotalLength){
+        var len=p.getTotalLength();
+        p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+      }
+    });
   }
 
   /* ---- 齿轮组：统一模数 u=10.5（r = u*n，所有轮齿距相同），
@@ -290,8 +313,9 @@
   var muteBtn = document.getElementById('mute');
   var intro = document.getElementById('intro');
 
-  scenes['scene-paris'].querySelector('.half-l').style.clipPath = crackPolygon('l');
-  scenes['scene-paris'].querySelector('.half-r').style.clipPath = crackPolygon('r');
+  [1,2,3].forEach(function(k){
+    scenes['scene-paris'].querySelector('.shard-'+k).style.clipPath = shardPolygon(k);
+  });
   buildSeam(scenes['scene-paris'].querySelector('.seam'));
   buildGears(document.querySelector('.gears'));
 
