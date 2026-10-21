@@ -24,35 +24,25 @@
   #scene-paris .pink{position:absolute;inset:0;background:
     radial-gradient(120% 90% at 50% 0%, rgba(255,200,220,.18), transparent 60%),
     linear-gradient(180deg, rgba(255,180,205,.10), rgba(255,210,225,.05));mix-blend-mode:soft-light}
-  #scene-paris .prince{position:absolute;right:7%;bottom:7%;width:13%;opacity:.85;
-    filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
-  #scene-paris.shake .photo{animation:shake .5s ease-in-out infinite}
-  @keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(-6px,3px) rotate(-.5deg)}
-    40%{transform:translate(5px,-4px) rotate(.5deg)}60%{transform:translate(-4px,-2px) rotate(-.3deg)}
-    80%{transform:translate(4px,3px) rotate(.3deg)}}
   #scene-paris.cracked .photo{filter:saturate(.82) contrast(1.05) brightness(.9) hue-rotate(-4deg)}
   /* 玻璃炸裂覆盖层 */
   .glass{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .12s ease;z-index:5}
-  .glass.cracked{opacity:1}
+  .cracked .glass{opacity:1}
   .glass .shard{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.82);stroke-width:.4;
     transform-box:fill-box;transform-origin:center;transition:transform .55s cubic-bezier(.2,.8,.3,1)}
-  .glass.cracked .shard{animation:shatter .55s cubic-bezier(.2,.9,.3,1) forwards}
+  .cracked .glass .shard{animation:shatter .55s cubic-bezier(.2,.9,.3,1) forwards}
   @keyframes shatter{to{transform:translate(var(--tx),var(--ty)) rotate(var(--r))}}
   .glass .crackline{stroke:rgba(255,255,255,.88);stroke-width:.35;opacity:0}
-  .glass.cracked .crackline{animation:draw .4s ease forwards}
+  .cracked .glass .crackline{animation:draw .4s ease forwards}
   @keyframes draw{from{opacity:0}to{opacity:.92}}
   .glass .flash{fill:#fff;opacity:0;transform-box:fill-box;transform-origin:center}
-  .glass.cracked .flash{animation:flash .42s ease-out forwards}
+  .cracked .glass .flash{animation:flash .42s ease-out forwards}
   @keyframes flash{0%{opacity:.95;transform:scale(.2)}35%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
 
   /* ===== Act 3/4 德国 ===== */
   #scene-germany .blue{position:absolute;inset:0;background:url('assets/germany-blueprint.png') center/cover;
     filter:contrast(1.04) brightness(1.02)}
   #scene-germany .blue-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,55,90,.45),rgba(12,22,40,.55))}
-  #scene-germany .gear{position:absolute;left:50%;top:50%;width:42%;transform:translate(-50%,-50%);
-    opacity:.92;animation:spin 9s linear infinite}
-  #scene-germany.reverse .gear{animation:spin 5s linear infinite reverse}
-  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
   #scene-germany .route{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
   #scene-germany.reverse .route{opacity:1}
 
@@ -112,7 +102,6 @@
     <div class="scene" id="scene-paris">
       <div class="photo"></div>
       <div class="pink"></div>
-      <img class="prince" src="../paris/prince.png" alt="">
       <svg class="glass" data-impact="62,40" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     </div>
 
@@ -120,14 +109,6 @@
     <div class="scene" id="scene-germany">
       <div class="blue"></div>
       <div class="blue-tint"></div>
-      <svg class="gear" viewBox="0 0 100 100">
-        <g fill="#c99b4a">
-          <circle cx="50" cy="50" r="30"/>
-          <g id="teeth"></g>
-        </g>
-        <circle cx="50" cy="50" r="11" fill="#16202f"/>
-        <circle cx="50" cy="50" r="30" fill="none" stroke="#16202f" stroke-width="2"/>
-      </svg>
       <svg class="route" viewBox="0 0 100 100" preserveAspectRatio="none">
         <path d="M8,92 C30,70 22,46 46,40 C70,34 66,16 88,12" fill="none" stroke="#e0b15a" stroke-width="1" stroke-dasharray="3 2"/>
       </svg>
@@ -168,24 +149,13 @@
 
 <script>
 (function(){
-  // 生成齿轮齿
-  var teeth = document.getElementById('teeth');
-  if(teeth){
-    var s='';
-    for(var i=0;i<12;i++){
-      var a=i*30*Math.PI/180, x=50+38*Math.cos(a), y=50+38*Math.sin(a);
-      s+='<rect x="'+(x-4)+'" y="'+(y-4)+'" width="8" height="8" transform="rotate('+(i*30)+' 50 50)"/>';
-    }
-    teeth.innerHTML=s;
-  }
-
   var ACTS = [
-    {t:0,  dur:6, scene:'scene-paris',      sub:'法国？艺术、浪漫、优雅。',                                  audio:null, mood:'paris'},
-    {t:6,  dur:6, scene:'scene-paris',      sub:'但如果，当时没有人认为它是艺术呢？',                          audio:null, mood:'silence'},
-    {t:12, dur:7, scene:'scene-germany',    sub:'德国？工程、秩序、精密。',                                    audio:null, mood:'germany'},
-    {t:19, dur:7, scene:'scene-germany',    sub:'但当整个系统需要改变时呢？',                                  audio:null, mood:'germany'},
-    {t:26, dur:8, scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？',                audio:null, mood:'suspense'},
-    {t:34, dur:6, scene:'scene-title',      sub:'',                                                            audio:null, mood:'fade'}
+    {t:0,  dur:6, scene:'scene-paris',      sub:'你是否认为法国等于艺术、浪漫、优雅。',                       mood:'paris'},
+    {t:6,  dur:6, scene:'scene-paris',      sub:'但如果，当时没有人认为它是艺术呢？',                          mood:'silence'},
+    {t:12, dur:7, scene:'scene-germany',    sub:'你是否认为德国代表了工程、秩序、精密。',                     mood:'germany'},
+    {t:19, dur:7, scene:'scene-germany',    sub:'但当整个系统需要改变时呢？',                                  mood:'germany'},
+    {t:26, dur:8, scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？',                mood:'suspense'},
+    {t:34, dur:6, scene:'scene-title',      sub:'',                                                            mood:'fade'}
   ];
 
   var scenes = {
@@ -254,11 +224,10 @@
     for(var k in scenes){ scenes[k].classList.remove('active'); }
     var name = ACTS[idx].scene;
     scenes[name].classList.add('active');
-    // 巴黎裂缝 / 德国反转 + 玻璃炸裂 状态
+    // 巴黎 / 德国 玻璃炸裂 + 德国反转新路线 状态
     scenes['scene-paris'].classList.toggle('cracked', idx===1);
-    scenes['scene-paris'].classList.toggle('shake', idx===1);
-    scenes['scene-germany'].classList.toggle('reverse', idx===3);
     scenes['scene-germany'].classList.toggle('cracked', idx===3);
+    scenes['scene-germany'].classList.toggle('reverse', idx===3);
   }
 
   function setSub(idx){
@@ -320,9 +289,9 @@
       poly.setAttribute('class','shard');
       poly.setAttribute('points', ix+','+iy+' '+x0.toFixed(1)+','+y0.toFixed(1)+' '+x1.toFixed(1)+','+y1.toFixed(1));
       var bx=Math.cos((a0+a1)/2), by=Math.sin((a0+a1)/2);
-      poly.style.setProperty('--tx',(bx*3.4).toFixed(2));
-      poly.style.setProperty('--ty',(by*3.4).toFixed(2));
-      poly.style.setProperty('--r',((i%2?1:-1)*2.2).toFixed(1));
+      poly.style.setProperty('--tx',(bx*3.4).toFixed(2)+'px');
+      poly.style.setProperty('--ty',(by*3.4).toFixed(2)+'px');
+      poly.style.setProperty('--r',((i%2?1:-1)*2.2).toFixed(1)+'deg');
       svg.appendChild(poly);
       var ln=document.createElementNS(NS,'line');
       ln.setAttribute('class','crackline'); ln.setAttribute('x1',ix); ln.setAttribute('y1',iy);
