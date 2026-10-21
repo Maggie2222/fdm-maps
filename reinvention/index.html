@@ -42,11 +42,13 @@
     transition:opacity .35s ease}
   #scene-paris.cracked .pink{opacity:.3}
   .seam{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .1s ease;z-index:6}
+  .seam *{fill:none}
   .cracked .seam{opacity:1}
-  .seam path{fill:none;stroke:rgba(255,252,246,.95);stroke-width:.5;
+  .seam path,.seam polyline{fill:none;stroke:rgba(255,252,246,.95);stroke-width:.5;
+    stroke-linejoin:round;stroke-linecap:round;
     filter:drop-shadow(0 0 7px rgba(255,255,255,.85))}
-  /* 快速描出 → 短促停留 → 消失，不留痕 */
-  .cracked .seam path{animation:seamDraw .2s ease forwards, seamFade .22s ease .24s forwards}
+  /* 快速描出→ 短促停留 → 消失，不留痕 */
+  .cracked .seam path,.cracked .seam polyline{animation:seamDraw .2s ease forwards, seamFade .22s ease .24s forwards}
   @keyframes seamDraw{to{stroke-dashoffset:0}}
   @keyframes seamFade{to{opacity:0}}
   .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7}
@@ -211,8 +213,10 @@
     if(!svg) return;
     var NS='http://www.w3.org/2000/svg';
     [CRACK_A, CRACK_B].forEach(function(C){
-      var p=document.createElementNS(NS,'polyline');
-      p.setAttribute('points', C.map(function(c){return c[0]+','+c[1];}).join(' '));
+      var p=document.createElementNS(NS,'path');
+      var d='M'+C[0][0]+','+C[0][1];
+      for(var i=1;i<C.length;i++) d+='L'+C[i][0]+','+C[i][1];
+      p.setAttribute('d',d);
       svg.appendChild(p);
       if(p.getTotalLength){
         var len=p.getTotalLength();
