@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Art of Reinvention — Paris · Munich</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:#0a0a0c;overflow:hidden;font-family:"Noto Serif SC",serif;color:#f3ece0}
+  /* 16:9 自适应舞台 */
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative;width:min(100vw,177.78vh);height:min(56.25vw,100vh);
+    overflow:hidden;background:#1a1320;box-shadow:0 0 80px rgba(0,0,0,.6)}
+  .scene{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease;pointer-events:none}
+  .scene.active{opacity:1}
+  .layer{position:absolute;inset:0;background-size:cover;background-position:center}
+
+  /* ===== Act 1/2 巴黎 ===== */
+  #scene-paris .photo{position:absolute;inset:6% 8%;background:url('../paris/paris-map.jpg') center/cover;
+    border:14px solid #f6ecd8;box-shadow:0 20px 60px rgba(0,0,0,.45);border-radius:2px;
+    filter:saturate(1.15) contrast(1.02)}
+  #scene-paris .pink{position:absolute;inset:0;background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,192,213,.30), transparent 55%),
+    linear-gradient(180deg, rgba(255,170,200,.18), rgba(255,210,225,.10));mix-blend-mode:soft-light}
+  #scene-paris .prince{position:absolute;right:9%;bottom:9%;width:16%;opacity:.9;
+    filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
+  #scene-paris.shake .photo{animation:shake .5s ease-in-out infinite}
+  @keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(-6px,3px) rotate(-.5deg)}
+    40%{transform:translate(5px,-4px) rotate(.5deg)}60%{transform:translate(-4px,-2px) rotate(-.3deg)}
+    80%{transform:translate(4px,3px) rotate(.3deg)}}
+  #scene-paris .crack{position:absolute;inset:6% 8%;opacity:0;transition:opacity .6s ease}
+  #scene-paris.cracked .crack{opacity:1}
+  #scene-paris.cracked .photo{filter:saturate(.8) contrast(1.05) brightness(.92)}
+  #scene-paris .scratch{position:absolute;inset:6% 8%;opacity:0;transition:opacity .8s ease}
+  #scene-paris.cracked .scratch{opacity:1}
+
+  /* ===== Act 3/4 德国 ===== */
+  #scene-germany .blue{position:absolute;inset:0;background:url('../munich/munich-map.jpg') center/cover;
+    filter:grayscale(.55) brightness(.7) contrast(1.1) hue-rotate(185deg) saturate(1.4)}
+  #scene-germany .blue-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,55,90,.45),rgba(12,22,40,.55))}
+  #scene-germany .gear{position:absolute;left:50%;top:50%;width:42%;transform:translate(-50%,-50%);
+    opacity:.92;animation:spin 9s linear infinite}
+  #scene-germany.reverse .gear{animation:spin 5s linear infinite reverse}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  #scene-germany .route{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
+  #scene-germany.reverse .route{opacity:1}
+
+  /* ===== Act 5 重组 + 城堡 ===== */
+  #scene-recombine{background:radial-gradient(80% 80% at 50% 50%, #2a2336, #0e0a14)}
+  #scene-recombine .piece{position:absolute;width:40%;height:60%;top:20%;background-size:cover;background-position:center;
+    border:8px solid rgba(246,236,216,.85);box-shadow:0 16px 50px rgba(0,0,0,.5);opacity:0}
+  #scene-recombine.active .pA{left:6%;animation:flyA 5s ease forwards}
+  #scene-recombine.active .pB{right:6%;animation:flyB 5s ease forwards}
+  @keyframes flyA{0%{opacity:0;transform:translate(-40%,0) rotate(-18deg)}30%{opacity:1}
+    100%{opacity:1;left:30%;transform:translate(0,0) rotate(-4deg)}}
+  @keyframes flyB{0%{opacity:0;transform:translate(40%,0) rotate(18deg)}30%{opacity:1}
+    100%{opacity:1;right:30%;transform:translate(0,0) rotate(4deg)}}
+  #scene-recombine .castle{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+  #scene-recombine.castle-in .castle{opacity:1}
+  #scene-recombine.castle-in .piece{opacity:0;transition:opacity .8s ease}
+
+  /* ===== 标题卡 ===== */
+  #scene-title{background:radial-gradient(90% 90% at 50% 40%, #1b1426, #060409);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  #scene-title .kicker{font-family:"Playfair Display",serif;font-style:italic;color:#c9a15a;letter-spacing:3px;font-size:clamp(12px,1.6vw,22px);opacity:0;transition:opacity 1s ease}
+  #scene-title .big{font-family:"Playfair Display",serif;font-weight:600;color:#f3ece0;letter-spacing:4px;
+    font-size:clamp(26px,4.6vw,62px);margin:.3em 0;opacity:0;transition:opacity 1.2s ease .3s}
+  #scene-title .sub{font-family:"Noto Serif SC",serif;font-weight:300;color:#b9aec4;letter-spacing:1px;
+    font-size:clamp(12px,1.8vw,24px);opacity:0;transition:opacity 1.2s ease .7s}
+  #scene-title .star{margin-top:5vh;opacity:0;transition:opacity 1.4s ease 1.1s}
+  #scene-title.active .kicker,#scene-title.active .big,#scene-title.active .sub,#scene-title.active .star{opacity:1}
+
+  /* ===== 字幕 ===== */
+  #subtitle{position:absolute;left:0;right:0;bottom:6%;text-align:center;padding:0 8%;
+    font-family:"Noto Serif SC",serif;font-weight:400;color:#f6efe2;font-size:clamp(15px,2.4vw,30px);
+    letter-spacing:1px;text-shadow:0 2px 14px rgba(0,0,0,.8);opacity:0;transition:opacity .5s ease;z-index:30}
+  #subtitle.show{opacity:1}
+
+  /* ===== 开始遮罩 ===== */
+  #intro{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(80% 80% at 50% 45%, #211828, #07050b);cursor:pointer}
+  #intro h1{font-family:"Playfair Display",serif;font-style:italic;color:#c9a15a;font-size:clamp(22px,3.4vw,44px);letter-spacing:2px}
+  #intro p{color:#b9aec4;margin-top:1.2em;font-weight:300;font-size:clamp(12px,1.6vw,18px);letter-spacing:1px}
+  #intro .play{margin-top:2.4em;padding:.7em 2.2em;border:1px solid #c9a15a;color:#f3ece0;border-radius:40px;
+    font-family:"Playfair Display",serif;letter-spacing:3px;font-size:clamp(13px,1.8vw,20px);transition:.3s}
+  #intro:hover .play{background:#c9a15a;color:#160f1d}
+
+  /* 静音按钮 */
+  #mute{position:absolute;top:14px;right:16px;z-index:40;background:rgba(0,0,0,.35);border:1px solid rgba(243,236,224,.4);
+    color:#f3ece0;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Serif SC",serif;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+
+    <!-- Act 1/2 巴黎 -->
+    <div class="scene" id="scene-paris">
+      <div class="photo"></div>
+      <div class="pink"></div>
+      <img class="prince" src="../paris/prince.png" alt="">
+      <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polyline points="20,0 38,22 30,40 52,55 44,78 60,100" fill="none" stroke="#2a1d12" stroke-width=".8" opacity=".85"/>
+        <polyline points="38,22 58,30" fill="none" stroke="#2a1d12" stroke-width=".5" opacity=".7"/>
+        <polyline points="52,55 74,62" fill="none" stroke="#2a1d12" stroke-width=".5" opacity=".7"/>
+      </svg>
+      <svg class="scratch" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <line x1="18" y1="20" x2="82" y2="80" stroke="#c0533e" stroke-width="1.4" opacity=".9"/>
+        <line x1="82" y1="20" x2="18" y2="80" stroke="#c0533e" stroke-width="1.4" opacity=".9"/>
+      </svg>
+    </div>
+
+    <!-- Act 3/4 德国 -->
+    <div class="scene" id="scene-germany">
+      <div class="blue"></div>
+      <div class="blue-tint"></div>
+      <svg class="gear" viewBox="0 0 100 100">
+        <g fill="#c99b4a">
+          <circle cx="50" cy="50" r="30"/>
+          <g id="teeth"></g>
+        </g>
+        <circle cx="50" cy="50" r="11" fill="#16202f"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="#16202f" stroke-width="2"/>
+      </svg>
+      <svg class="route" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M8,92 C30,70 22,46 46,40 C70,34 66,16 88,12" fill="none" stroke="#e0b15a" stroke-width="1" stroke-dasharray="3 2"/>
+      </svg>
+    </div>
+
+    <!-- Act 5 重组 + 城堡 -->
+    <div class="scene" id="scene-recombine">
+      <div class="piece pA" style="background-image:url('../paris/paris-map.jpg')"></div>
+      <div class="piece pB" style="background-image:url('../munich/munich-map.jpg')"></div>
+      <div class="castle">
+        <svg viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#cdd6e2"/><stop offset=".55" stop-color="#aeb9cc"/>
+              <stop offset="1" stop-color="#8a96ad"/>
+            </linearGradient>
+          </defs>
+          <rect width="1280" height="720" fill="url(#sky)"/>
+          <ellipse cx="640" cy="430" rx="760" ry="150" fill="#e9eef5" opacity=".55"/>
+          <ellipse cx="430" cy="500" rx="520" ry="120" fill="#f1f5fa" opacity=".5"/>
+          <ellipse cx="880" cy="520" rx="560" ry="130" fill="#eef3f9" opacity=".45"/>
+          <!-- 远处城堡剪影 -->
+          <g fill="#5b6478" opacity=".9" transform="translate(540,300)">
+            <rect x="40" y="60" width="160" height="160"/>
+            <polygon points="40,60 120,0 200,60"/>
+            <rect x="80" y="20" width="40" height="50"/>
+            <polygon points="80,20 100,-12 120,20"/>
+            <rect x="0" y="110" width="44" height="110"/>
+            <polygon points="0,110 22,78 44,110"/>
+            <rect x="196" y="100" width="44" height="120"/>
+            <polygon points="196,100 218,68 240,100"/>
+            <rect x="120" y="150" width="34" height="70"/>
+          </g>
+          <rect x="0" y="690" width="1280" height="40" fill="#7a8498" opacity=".6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 标题卡 -->
+    <div class="scene" id="scene-title">
+      <div class="kicker">A short film</div>
+      <div class="big">THE ART OF REINVENTION</div>
+      <div class="sub">Paris. Munich. And everything you thought you knew.</div>
+      <svg class="star" width="46" height="46" viewBox="0 0 24 24">
+        <path d="M12 2l2.4 6.9H22l-5.8 4.2 2.2 6.9L12 16l-6.4 4.2 2.2-6.9L2 8.9h7.6z"
+          fill="none" stroke="#c9a15a" stroke-width="1.2"/>
+      </svg>
+    </div>
+
+    <div id="subtitle"></div>
+    <button id="mute">♪ 声音：开</button>
+
+    <div id="intro">
+      <h1>The Art of Reinvention</h1>
+      <p>Paris · Munich — 一段 40 秒的序章</p>
+      <div class="play">▶ 播放预告片</div>
+    </div>
+
+  </div>
+</div>
+
+<audio id="a1" src="audio/n1.mp3" preload="auto"></audio>
+<audio id="a2" src="audio/n2.mp3" preload="auto"></audio>
+<audio id="a3" src="audio/n3.mp3" preload="auto"></audio>
+<audio id="a4" src="audio/n4.mp3" preload="auto"></audio>
+<audio id="a5" src="audio/n5.mp3" preload="auto"></audio>
+
+<script>
+(function(){
+  // 生成齿轮齿
+  var teeth = document.getElementById('teeth');
+  if(teeth){
+    var s='';
+    for(var i=0;i<12;i++){
+      var a=i*30*Math.PI/180, x=50+38*Math.cos(a), y=50+38*Math.sin(a);
+      s+='<rect x="'+(x-4)+'" y="'+(y-4)+'" width="8" height="8" transform="rotate('+(i*30)+' 50 50)"/>';
+    }
+    teeth.innerHTML=s;
+  }
+
+  var ACTS = [
+    {t:0,  dur:6, scene:'scene-paris',      sub:'法国？艺术、浪漫、优雅。',                                  audio:null, mood:'paris'},
+    {t:6,  dur:6, scene:'scene-paris',      sub:'但如果，当时没有人认为它是艺术呢？',                          audio:null, mood:'silence'},
+    {t:12, dur:7, scene:'scene-germany',    sub:'德国？工程、秩序、精密。',                                    audio:null, mood:'germany'},
+    {t:19, dur:7, scene:'scene-germany',    sub:'但当整个系统需要改变时呢？',                                  audio:null, mood:'germany'},
+    {t:26, dur:8, scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？',                audio:null, mood:'suspense'},
+    {t:34, dur:6, scene:'scene-title',      sub:'',                                                            audio:null, mood:'fade'}
+  ];
+  // 旁白音频：与阶段同步（除标题外每幕一段）
+  var AUDIO = {0:'a1',1:'a2',2:'a3',3:'a4',4:'a5'};
+
+  var scenes = {
+    'scene-paris':document.getElementById('scene-paris'),
+    'scene-germany':document.getElementById('scene-germany'),
+    'scene-recombine':document.getElementById('scene-recombine'),
+    'scene-title':document.getElementById('scene-title')
+  };
+  var subtitle = document.getElementById('subtitle');
+  var muteBtn = document.getElementById('mute');
+  var intro = document.getElementById('intro');
+
+  var TOTAL = 40;
+  var startTs = 0, raf = 0, curIdx = -1, audioPlayed = {}, muted = false, musicReady = false;
+
+  /* ---- 极简配乐（Web Audio 合成，可整体替换为 mp3） ---- */
+  var Music = (function(){
+    var ctx, master, nodes=[], timers=[];
+    function ensure(){
+      if(ctx) return;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      ctx = new AC(); master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    }
+    function clear(){
+      nodes.forEach(function(n){ try{n.stop&&n.stop();}catch(e){} try{n.disconnect();}catch(e){} });
+      nodes=[]; timers.forEach(function(t){clearInterval(t);}); timers=[];
+    }
+    function pad(freqs){
+      clear(); if(!ctx) return;
+      master.gain.linearRampToValueAtTime(0.12, ctx.currentTime+1.5);
+      freqs.forEach(function(f){
+        var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+        var g=ctx.createGain(); g.gain.value=0; o.connect(g); g.connect(master);
+        g.gain.linearRampToValueAtTime(0.05, ctx.currentTime+2); o.start(); nodes.push(o);
+      });
+    }
+    function tick(){
+      clear(); if(!ctx) return;
+      master.gain.linearRampToValueAtTime(0.09, ctx.currentTime+0.4);
+      var on=true;
+      var t=setInterval(function(){
+        if(!ctx) return;
+        var o=ctx.createOscillator(); o.type='square'; o.frequency.value = on?200:150;
+        var g=ctx.createGain(); g.gain.value=0; o.connect(g); g.connect(master);
+        var now=ctx.currentTime; g.gain.linearRampToValueAtTime(0.07, now+0.01);
+        g.gain.exponentialRampToValueAtTime(0.0008, now+0.08);
+        o.start(now); o.stop(now+0.1); on=!on;
+      }, 470); timers.push(t);
+    }
+    function drone(){
+      clear(); if(!ctx) return;
+      master.gain.linearRampToValueAtTime(0.13, ctx.currentTime+1.5);
+      [55,82.41].forEach(function(f){
+        var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+        var g=ctx.createGain(); g.gain.value=0.06;
+        var lfo=ctx.createOscillator(); lfo.frequency.value=0.14;
+        var lg=ctx.createGain(); lg.gain.value=0.035; lfo.connect(lg); lg.connect(g.gain);
+        o.connect(g); g.connect(master); o.start(); lfo.start(); nodes.push(o,lfo);
+      });
+    }
+    function silence(){ clear(); if(master) master.gain.linearRampToValueAtTime(0, ctx.currentTime+0.05); }
+    return { ensure:ensure, pad:pad, tick:tick, drone:drone, silence:silence };
+  })();
+
+  function setScene(idx){
+    for(var k in scenes){ scenes[k].classList.remove('active'); }
+    var name = ACTS[idx].scene;
+    scenes[name].classList.add('active');
+    // 巴黎裂缝 / 德国反转 状态
+    scenes['scene-paris'].classList.toggle('cracked', idx===1);
+    scenes['scene-paris'].classList.toggle('shake', idx===1);
+    scenes['scene-germany'].classList.toggle('reverse', idx===3);
+  }
+
+  function setSub(idx){
+    var txt = ACTS[idx].sub;
+    if(txt){ subtitle.textContent = txt; subtitle.classList.add('show'); }
+    else { subtitle.classList.remove('show'); }
+  }
+
+  function playAudio(idx){
+    if(idx in AUDIO && !audioPlayed[idx]){
+      var el = document.getElementById(AUDIO[idx]);
+      if(el){ el.currentTime=0; var pr=el.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+      audioPlayed[idx]=true;
+    }
+  }
+
+  function setMood(idx){
+    var m = ACTS[idx].mood;
+    if(!musicReady) return;
+    if(m==='paris') Music.pad([261.6,329.6,392.0]);
+    else if(m==='germany'||m==='suspense'){ if(m==='germany') Music.tick(); else Music.drone(); }
+    else if(m==='silence'){ Music.silence();
+      // 音乐停顿半秒后轻柔恢复
+      setTimeout(function(){ if(musicReady && curIdx===1) Music.pad([261.6,329.6]); }, 600);
+    }
+    else if(m==='fade'){ Music.silence(); }
+  }
+
+  function frame(now){
+    var t = (now - startTs)/1000;
+    if(t >= TOTAL){ cancelAnimationFrame(raf); return; }
+    // 找当前阶段
+    var idx=0; for(var i=0;i<ACTS.length;i++){ if(t>=ACTS[i].t) idx=i; }
+    if(idx!==curIdx){
+      curIdx=idx; setScene(idx); setSub(idx); playAudio(idx); setMood(idx);
+    }
+    // Act5 晚期揭示城堡（31s 起）
+    if(t>=31) scenes['scene-recombine'].classList.add('castle-in');
+    else scenes['scene-recombine'].classList.remove('castle-in');
+
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start(){
+    intro.style.display='none';
+    Music.ensure(); musicReady=true;
+    startTs = performance.now();
+    curIdx=-1; audioPlayed={};
+    raf = requestAnimationFrame(frame);
+  }
+  intro.addEventListener('click', start);
+
+  muteBtn.addEventListener('click', function(){
+    muted=!muted;
+    // 切换旁白音轨 + 合成配乐主增益
+    [ 'a1','a2','a3','a4','a5' ].forEach(function(id){ var e=document.getElementById(id); if(e) e.muted=muted; });
+    muteBtn.textContent = muted ? '♪ 声音：关' : '♪ 声音：开';
+    if(musicReady){ try{ if(muted) Music.silence(); else setMood(curIdx<0?0:curIdx); }catch(e){} }
+  });
+})();
+</script>
+</body>
+</html>
