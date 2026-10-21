@@ -30,11 +30,20 @@
   @keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(-6px,3px) rotate(-.5deg)}
     40%{transform:translate(5px,-4px) rotate(.5deg)}60%{transform:translate(-4px,-2px) rotate(-.3deg)}
     80%{transform:translate(4px,3px) rotate(.3deg)}}
-  #scene-paris .crack{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
-  #scene-paris.cracked .crack{opacity:1}
-  #scene-paris.cracked .photo{filter:saturate(.85) contrast(1.05) brightness(.94)}
-  #scene-paris .scratch{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
-  #scene-paris.cracked .scratch{opacity:1}
+  #scene-paris.cracked .photo{filter:saturate(.82) contrast(1.05) brightness(.9) hue-rotate(-4deg)}
+  /* 玻璃炸裂覆盖层 */
+  .glass{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .12s ease;z-index:5}
+  .glass.cracked{opacity:1}
+  .glass .shard{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.82);stroke-width:.4;
+    transform-box:fill-box;transform-origin:center;transition:transform .55s cubic-bezier(.2,.8,.3,1)}
+  .glass.cracked .shard{animation:shatter .55s cubic-bezier(.2,.9,.3,1) forwards}
+  @keyframes shatter{to{transform:translate(var(--tx),var(--ty)) rotate(var(--r))}}
+  .glass .crackline{stroke:rgba(255,255,255,.88);stroke-width:.35;opacity:0}
+  .glass.cracked .crackline{animation:draw .4s ease forwards}
+  @keyframes draw{from{opacity:0}to{opacity:.92}}
+  .glass .flash{fill:#fff;opacity:0;transform-box:fill-box;transform-origin:center}
+  .glass.cracked .flash{animation:flash .42s ease-out forwards}
+  @keyframes flash{0%{opacity:.95;transform:scale(.2)}35%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
 
   /* ===== Act 3/4 德国 ===== */
   #scene-germany .blue{position:absolute;inset:0;background:url('assets/germany-blueprint.png') center/cover;
@@ -73,10 +82,13 @@
   #scene-title.active .kicker,#scene-title.active .big,#scene-title.active .sub,#scene-title.active .star{opacity:1}
 
   /* ===== 字幕 ===== */
-  #subtitle{position:absolute;left:0;right:0;bottom:6%;text-align:center;padding:0 8%;
-    font-family:"Noto Serif SC",serif;font-weight:400;color:#f6efe2;font-size:clamp(15px,2.4vw,30px);
-    letter-spacing:1px;text-shadow:0 2px 14px rgba(0,0,0,.8);opacity:0;transition:opacity .5s ease;z-index:30}
+  #subtitle{position:absolute;left:50%;transform:translateX(-50%);bottom:7%;max-width:90%;
+    text-align:center;padding:.5em 1.2em;background:rgba(16,11,20,.62);border:1px solid rgba(243,236,224,.22);
+    border-radius:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    font-family:"Noto Serif SC",serif;font-weight:600;color:#fdf6ea;font-size:clamp(18px,3vw,38px);
+    letter-spacing:2px;text-shadow:0 2px 10px rgba(0,0,0,.6);opacity:0;transition:opacity .5s ease;z-index:30}
   #subtitle.show{opacity:1}
+  #subtitle.france{border-color:rgba(192,83,62,.7);box-shadow:0 0 26px rgba(192,83,62,.28)}
 
   /* ===== 开始遮罩 ===== */
   #intro{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -101,15 +113,7 @@
       <div class="photo"></div>
       <div class="pink"></div>
       <img class="prince" src="../paris/prince.png" alt="">
-      <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <polyline points="20,0 38,22 30,40 52,55 44,78 60,100" fill="none" stroke="#2a1d12" stroke-width=".8" opacity=".85"/>
-        <polyline points="38,22 58,30" fill="none" stroke="#2a1d12" stroke-width=".5" opacity=".7"/>
-        <polyline points="52,55 74,62" fill="none" stroke="#2a1d12" stroke-width=".5" opacity=".7"/>
-      </svg>
-      <svg class="scratch" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <line x1="18" y1="20" x2="82" y2="80" stroke="#c0533e" stroke-width="1.4" opacity=".9"/>
-        <line x1="82" y1="20" x2="18" y2="80" stroke="#c0533e" stroke-width="1.4" opacity=".9"/>
-      </svg>
+      <svg class="glass" data-impact="62,40" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     </div>
 
     <!-- Act 3/4 德国 -->
@@ -127,6 +131,7 @@
       <svg class="route" viewBox="0 0 100 100" preserveAspectRatio="none">
         <path d="M8,92 C30,70 22,46 46,40 C70,34 66,16 88,12" fill="none" stroke="#e0b15a" stroke-width="1" stroke-dasharray="3 2"/>
       </svg>
+      <svg class="glass" data-impact="50,50" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     </div>
 
     <!-- Act 5 重组 + 城堡 -->
@@ -150,7 +155,7 @@
     </div>
 
     <div id="subtitle"></div>
-    <button id="mute">♪ 声音：开</button>
+    <button id="mute">♪ 配乐：开</button>
 
     <div id="intro">
       <h1>The Art of Reinvention</h1>
@@ -160,12 +165,6 @@
 
   </div>
 </div>
-
-<audio id="a1" src="audio/n1.mp3" preload="auto"></audio>
-<audio id="a2" src="audio/n2.mp3" preload="auto"></audio>
-<audio id="a3" src="audio/n3.mp3" preload="auto"></audio>
-<audio id="a4" src="audio/n4.mp3" preload="auto"></audio>
-<audio id="a5" src="audio/n5.mp3" preload="auto"></audio>
 
 <script>
 (function(){
@@ -188,8 +187,6 @@
     {t:26, dur:8, scene:'scene-recombine',  sub:'如果我们对一个地方的理解，只是故事的开始呢？',                audio:null, mood:'suspense'},
     {t:34, dur:6, scene:'scene-title',      sub:'',                                                            audio:null, mood:'fade'}
   ];
-  // 旁白音频：与阶段同步（除标题外每幕一段）
-  var AUDIO = {0:'a1',1:'a2',2:'a3',3:'a4',4:'a5'};
 
   var scenes = {
     'scene-paris':document.getElementById('scene-paris'),
@@ -202,7 +199,7 @@
   var intro = document.getElementById('intro');
 
   var TOTAL = 40;
-  var startTs = 0, raf = 0, curIdx = -1, audioPlayed = {}, muted = false, musicReady = false;
+  var startTs = 0, raf = 0, curIdx = -1, muted = false, musicReady = false;
 
   /* ---- 极简配乐（Web Audio 合成，可整体替换为 mp3） ---- */
   var Music = (function(){
@@ -257,24 +254,18 @@
     for(var k in scenes){ scenes[k].classList.remove('active'); }
     var name = ACTS[idx].scene;
     scenes[name].classList.add('active');
-    // 巴黎裂缝 / 德国反转 状态
+    // 巴黎裂缝 / 德国反转 + 玻璃炸裂 状态
     scenes['scene-paris'].classList.toggle('cracked', idx===1);
     scenes['scene-paris'].classList.toggle('shake', idx===1);
     scenes['scene-germany'].classList.toggle('reverse', idx===3);
+    scenes['scene-germany'].classList.toggle('cracked', idx===3);
   }
 
   function setSub(idx){
     var txt = ACTS[idx].sub;
-    if(txt){ subtitle.textContent = txt; subtitle.classList.add('show'); }
-    else { subtitle.classList.remove('show'); }
-  }
-
-  function playAudio(idx){
-    if(idx in AUDIO && !audioPlayed[idx]){
-      var el = document.getElementById(AUDIO[idx]);
-      if(el){ el.currentTime=0; var pr=el.play(); if(pr&&pr.catch) pr.catch(function(){}); }
-      audioPlayed[idx]=true;
-    }
+    if(txt){ subtitle.textContent = txt;
+      subtitle.className = 'show' + (idx<=1 ? ' france' : ''); }
+    else { subtitle.className = ''; }
   }
 
   function setMood(idx){
@@ -295,7 +286,7 @@
     // 找当前阶段
     var idx=0; for(var i=0;i<ACTS.length;i++){ if(t>=ACTS[i].t) idx=i; }
     if(idx!==curIdx){
-      curIdx=idx; setScene(idx); setSub(idx); playAudio(idx); setMood(idx);
+      curIdx=idx; setScene(idx); setSub(idx); setMood(idx);
     }
     // Act5 晚期揭示城堡（31s 起）
     if(t>=31) scenes['scene-recombine'].classList.add('castle-in');
@@ -308,16 +299,43 @@
     intro.style.display='none';
     Music.ensure(); musicReady=true;
     startTs = performance.now();
-    curIdx=-1; audioPlayed={};
+    curIdx=-1;
     raf = requestAnimationFrame(frame);
   }
   intro.addEventListener('click', start);
 
+  // 生成玻璃炸裂覆盖层（放射状碎片 + 裂痕 + 冲击闪光）
+  function buildGlass(svg){
+    if(!svg) return;
+    var imp=(svg.getAttribute('data-impact')||'50,50').split(',').map(Number);
+    var ix=imp[0], iy=imp[1], NS='http://www.w3.org/2000/svg', N=14, R=82;
+    var fl=document.createElementNS(NS,'circle');
+    fl.setAttribute('class','flash'); fl.setAttribute('cx',ix); fl.setAttribute('cy',iy); fl.setAttribute('r',9);
+    svg.appendChild(fl);
+    for(var i=0;i<N;i++){
+      var a0=(i/N)*2*Math.PI, a1=((i+1)/N)*2*Math.PI;
+      var x0=ix+R*Math.cos(a0), y0=iy+R*Math.sin(a0);
+      var x1=ix+R*Math.cos(a1), y1=iy+R*Math.sin(a1);
+      var poly=document.createElementNS(NS,'polygon');
+      poly.setAttribute('class','shard');
+      poly.setAttribute('points', ix+','+iy+' '+x0.toFixed(1)+','+y0.toFixed(1)+' '+x1.toFixed(1)+','+y1.toFixed(1));
+      var bx=Math.cos((a0+a1)/2), by=Math.sin((a0+a1)/2);
+      poly.style.setProperty('--tx',(bx*3.4).toFixed(2));
+      poly.style.setProperty('--ty',(by*3.4).toFixed(2));
+      poly.style.setProperty('--r',((i%2?1:-1)*2.2).toFixed(1));
+      svg.appendChild(poly);
+      var ln=document.createElementNS(NS,'line');
+      ln.setAttribute('class','crackline'); ln.setAttribute('x1',ix); ln.setAttribute('y1',iy);
+      ln.setAttribute('x2',x0.toFixed(1)); ln.setAttribute('y2',y0.toFixed(1));
+      svg.appendChild(ln);
+    }
+  }
+  var glasses=document.querySelectorAll('.glass');
+  for(var gi=0; gi<glasses.length; gi++){ buildGlass(glasses[gi]); }
+
   muteBtn.addEventListener('click', function(){
     muted=!muted;
-    // 切换旁白音轨 + 合成配乐主增益
-    [ 'a1','a2','a3','a4','a5' ].forEach(function(id){ var e=document.getElementById(id); if(e) e.muted=muted; });
-    muteBtn.textContent = muted ? '♪ 声音：关' : '♪ 声音：开';
+    muteBtn.textContent = muted ? '♪ 配乐：关' : '♪ 配乐：开';
     if(musicReady){ try{ if(muted) Music.silence(); else setMood(curIdx<0?0:curIdx); }catch(e){} }
   });
 })();
