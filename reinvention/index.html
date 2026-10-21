@@ -18,27 +18,27 @@
   .layer{position:absolute;inset:0;background-size:cover;background-position:center}
 
   /* ===== Act 1/2 巴黎 ===== */
-  #scene-paris .photo{position:absolute;inset:6% 8%;background:url('../paris/paris-map.jpg') center/cover;
+  #scene-paris .photo{position:absolute;inset:0;background:url('assets/paris-postcard.png') center/cover;
     border:14px solid #f6ecd8;box-shadow:0 20px 60px rgba(0,0,0,.45);border-radius:2px;
     filter:saturate(1.15) contrast(1.02)}
   #scene-paris .pink{position:absolute;inset:0;background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255,192,213,.30), transparent 55%),
-    linear-gradient(180deg, rgba(255,170,200,.18), rgba(255,210,225,.10));mix-blend-mode:soft-light}
-  #scene-paris .prince{position:absolute;right:9%;bottom:9%;width:16%;opacity:.9;
+    radial-gradient(120% 90% at 50% 0%, rgba(255,200,220,.18), transparent 60%),
+    linear-gradient(180deg, rgba(255,180,205,.10), rgba(255,210,225,.05));mix-blend-mode:soft-light}
+  #scene-paris .prince{position:absolute;right:7%;bottom:7%;width:13%;opacity:.85;
     filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
   #scene-paris.shake .photo{animation:shake .5s ease-in-out infinite}
   @keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(-6px,3px) rotate(-.5deg)}
     40%{transform:translate(5px,-4px) rotate(.5deg)}60%{transform:translate(-4px,-2px) rotate(-.3deg)}
     80%{transform:translate(4px,3px) rotate(.3deg)}}
-  #scene-paris .crack{position:absolute;inset:6% 8%;opacity:0;transition:opacity .6s ease}
+  #scene-paris .crack{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
   #scene-paris.cracked .crack{opacity:1}
-  #scene-paris.cracked .photo{filter:saturate(.8) contrast(1.05) brightness(.92)}
-  #scene-paris .scratch{position:absolute;inset:6% 8%;opacity:0;transition:opacity .8s ease}
+  #scene-paris.cracked .photo{filter:saturate(.85) contrast(1.05) brightness(.94)}
+  #scene-paris .scratch{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
   #scene-paris.cracked .scratch{opacity:1}
 
   /* ===== Act 3/4 德国 ===== */
-  #scene-germany .blue{position:absolute;inset:0;background:url('../munich/munich-map.jpg') center/cover;
-    filter:grayscale(.55) brightness(.7) contrast(1.1) hue-rotate(185deg) saturate(1.4)}
+  #scene-germany .blue{position:absolute;inset:0;background:url('assets/germany-blueprint.png') center/cover;
+    filter:contrast(1.04) brightness(1.02)}
   #scene-germany .blue-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,55,90,.45),rgba(12,22,40,.55))}
   #scene-germany .gear{position:absolute;left:50%;top:50%;width:42%;transform:translate(-50%,-50%);
     opacity:.92;animation:spin 9s linear infinite}
@@ -131,34 +131,10 @@
 
     <!-- Act 5 重组 + 城堡 -->
     <div class="scene" id="scene-recombine">
-      <div class="piece pA" style="background-image:url('../paris/paris-map.jpg')"></div>
-      <div class="piece pB" style="background-image:url('../munich/munich-map.jpg')"></div>
+      <div class="piece pA" style="background-image:url('assets/paris-postcard.png')"></div>
+      <div class="piece pB" style="background-image:url('assets/germany-blueprint.png')"></div>
       <div class="castle">
-        <svg viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#cdd6e2"/><stop offset=".55" stop-color="#aeb9cc"/>
-              <stop offset="1" stop-color="#8a96ad"/>
-            </linearGradient>
-          </defs>
-          <rect width="1280" height="720" fill="url(#sky)"/>
-          <ellipse cx="640" cy="430" rx="760" ry="150" fill="#e9eef5" opacity=".55"/>
-          <ellipse cx="430" cy="500" rx="520" ry="120" fill="#f1f5fa" opacity=".5"/>
-          <ellipse cx="880" cy="520" rx="560" ry="130" fill="#eef3f9" opacity=".45"/>
-          <!-- 远处城堡剪影 -->
-          <g fill="#5b6478" opacity=".9" transform="translate(540,300)">
-            <rect x="40" y="60" width="160" height="160"/>
-            <polygon points="40,60 120,0 200,60"/>
-            <rect x="80" y="20" width="40" height="50"/>
-            <polygon points="80,20 100,-12 120,20"/>
-            <rect x="0" y="110" width="44" height="110"/>
-            <polygon points="0,110 22,78 44,110"/>
-            <rect x="196" y="100" width="44" height="120"/>
-            <polygon points="196,100 218,68 240,100"/>
-            <rect x="120" y="150" width="34" height="70"/>
-          </g>
-          <rect x="0" y="690" width="1280" height="40" fill="#7a8498" opacity=".6"/>
-        </svg>
+        <img src="assets/castle-fog.png" alt="" style="width:100%;height:100%;object-fit:cover">
       </div>
     </div>
 
